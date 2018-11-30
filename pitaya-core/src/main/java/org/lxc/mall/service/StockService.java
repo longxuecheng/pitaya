@@ -1,13 +1,20 @@
 package org.lxc.mall.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.lxc.mall.api.stock.IStockService;
+import org.lxc.mall.core.exception.ProcessException;
 import org.lxc.mall.dao.StockMapper;
 import org.lxc.mall.model.Stock;
+import org.lxc.mall.model.request.StockWriteCondition;
+import org.lxc.mall.model.response.Stock_DTO;
+import org.lxc.mall.model.response.TimeGroup_DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class StockService implements IStockService {
 
@@ -15,8 +22,9 @@ public class StockService implements IStockService {
 	private StockMapper stockDao;
 	
 	@Override
-	public List<Stock> queryByGoodsId(Long goodsId) {
-		return stockDao.selectByGoodsId(goodsId);
+	public List<Stock_DTO> queryByGoodsId(Long goodsId) {
+		List<Stock> stocks = stockDao.selectByGoodsId(goodsId);
+		return buildStockDTOs(stocks);
 	}
 
 	@Override
@@ -24,5 +32,44 @@ public class StockService implements IStockService {
 		return stockDao.selectByPrimaryKey(id);
 	}
 
-	
+	@Override
+	public int batchEdit(List<StockWriteCondition> stocks) throws Exception {
+		try {
+			for (StockWriteCondition s : stocks) {
+				Stock dbStock = s.parseModel();
+				if (dbStock.getId() != null && dbStock.getId().longValue() != 0) {
+					stockDao.updateByPrimaryKeySelective(dbStock);
+				}else {
+					stockDao.insertSelective(dbStock);
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new ProcessException("编辑库存信息异常");
+		}
+		return 0;
+	}
+
+	private List<Stock_DTO> buildStockDTOs(List<Stock> stocks) {
+		if (stocks == null || stocks.isEmpty()) {
+			return null;
+		}
+		List<Stock_DTO> dtos = new ArrayList<>();
+		
+		for (Stock s : stocks) {
+			Stock_DTO dto = new Stock_DTO();
+			dto.setId(s.getId());
+			dto.setTimeGroup(new TimeGroup_DTO(s.getCreatedTime(), s.getUpdatedTime(), s.getDeletedTime()));
+			dto.setAdminId(s.getAdminId());
+			dto.setAdminName(s.getAdminName());
+			dto.setGoodsId(s.getGoodsId());
+			dto.setName(s.getName());
+			dto.setCostUnitPrice(s.getCostUnitPrice());
+			dto.setSaleUnitPrice(s.getSaleUnitPrice());
+			dto.setTotalQuantity(s.getTotalQuantity());
+			dto.setAvailableQuantity(s.getAvailableQuantity());
+			dtos.add(dto);
+		}
+		return dtos;
+	}
 }

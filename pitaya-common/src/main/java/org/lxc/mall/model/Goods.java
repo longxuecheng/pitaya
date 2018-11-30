@@ -1,6 +1,7 @@
 package org.lxc.mall.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Goods implements Serializable {
     private Long id;
@@ -14,6 +15,14 @@ public class Goods implements Serializable {
     private String description;
 
     private Byte isDelete;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    private Date deleteTime;
+
+    private Long supplierId;
 
     private static final long serialVersionUID = 1L;
 
@@ -50,18 +59,50 @@ public class Goods implements Serializable {
     }
 
     public String getDescription() {
-		return description;
-	}
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description == null ? null : description.trim();
+    }
 
-	public Byte getIsDelete() {
+    public Byte getIsDelete() {
         return isDelete;
     }
 
     public void setIsDelete(Byte isDelete) {
         this.isDelete = isDelete;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Date getDeleteTime() {
+        return deleteTime;
+    }
+
+    public void setDeleteTime(Date deleteTime) {
+        this.deleteTime = deleteTime;
+    }
+
+    public Long getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(Long supplierId) {
+        this.supplierId = supplierId;
     }
 }

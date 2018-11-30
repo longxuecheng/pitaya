@@ -17,23 +17,23 @@ public class SaleOrder implements Serializable {
 
     private Long userId;
 
-    private Integer status;
+    private String status;
 
     private BigDecimal payAmt;
 
     private BigDecimal orderAmt;
-   
-    private Short isDelete;
 
-    public Short getIsDelete() {
-		return isDelete;
-	}
+    private Byte isDelete;
 
-	public void setIsDelete(Short isDelete) {
-		this.isDelete = isDelete;
-	}
+    private String receiver;
 
-	private static final long serialVersionUID = 1L;
+    private String address;
+
+    private String phoneNo;
+
+    private Long supplierId;
+
+    private static final long serialVersionUID = 1L;
 
     public Long getId() {
         return id;
@@ -83,12 +83,12 @@ public class SaleOrder implements Serializable {
         this.userId = userId;
     }
 
-    public Integer getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
     }
 
     public BigDecimal getPayAmt() {
@@ -105,5 +105,45 @@ public class SaleOrder implements Serializable {
 
     public void setOrderAmt(BigDecimal orderAmt) {
         this.orderAmt = orderAmt;
+    }
+
+    public Byte getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(Byte isDelete) {
+        this.isDelete = isDelete;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver == null ? null : receiver.trim();
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address == null ? null : address.trim();
+    }
+
+    public String getPhoneNo() {
+        return phoneNo;
+    }
+
+    public void setPhoneNo(String phoneNo) {
+        this.phoneNo = phoneNo == null ? null : phoneNo.trim();
+    }
+
+    public Long getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(Long supplierId) {
+        this.supplierId = supplierId;
     }
 }

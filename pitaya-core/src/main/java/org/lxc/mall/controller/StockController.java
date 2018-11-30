@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @EnableAutoConfiguration
-@RequestMapping("/stock")
+@RequestMapping("/manage/stock")
 public class StockController {
 	
 	@Autowired

@@ -12,10 +12,10 @@ public interface SaleOrderMapper {
     int insertSelective(SaleOrder record);
 
     SaleOrder selectByPrimaryKey(Long id);
+    
+    List<SaleOrder> selectAll();
 
     int updateByPrimaryKeySelective(SaleOrder record);
 
     int updateByPrimaryKey(SaleOrder record);
-    
-    List<SaleOrder> selectAll();
 }

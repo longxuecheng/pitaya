@@ -8,18 +8,20 @@
     <result column="producing_area" property="producingArea" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="VARCHAR" />
     <result column="is_delete" property="isDelete" jdbcType="TINYINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="supplier_id" property="supplierId" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, category, producing_area, description, is_delete
+    id, name, category, producing_area, description, is_delete, create_time, update_time, 
+    delete_time, supplier_id
   </sql>
-  
-  <select id="selectAll" resultMap="BaseResultMap" >
-    select 
+  <select id="selectAll" resultMap="BaseResultMap">
+  	 select 
     <include refid="Base_Column_List" />
-    from goods
-    
+    from goods order by create_time desc
   </select>
-  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
@@ -32,13 +34,15 @@
   </delete>
   <insert id="insert" parameterType="org.lxc.mall.model.Goods" >
     insert into goods (id, name, category, 
-      producing_area, description, is_delete
-      )
+      producing_area, description, is_delete, 
+      create_time, update_time, delete_time, 
+      supplier_id)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, 
-      #{producingArea,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{isDelete,jdbcType=TINYINT}
-      )
+      #{producingArea,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{isDelete,jdbcType=TINYINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{deleteTime,jdbcType=TIMESTAMP}, 
+      #{supplierId,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="org.lxc.mall.model.Goods" keyColumn="id" keyProperty="id">
+  <insert id="insertSelective" parameterType="org.lxc.mall.model.Goods" >
     insert into goods
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -58,6 +62,18 @@
       </if>
       <if test="isDelete != null" >
         is_delete,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="deleteTime != null" >
+        delete_time,
+      </if>
+      <if test="supplierId != null" >
+        supplier_id,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -79,6 +95,18 @@
       <if test="isDelete != null" >
         #{isDelete,jdbcType=TINYINT},
       </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="supplierId != null" >
+        #{supplierId,jdbcType=BIGINT},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="org.lxc.mall.model.Goods" >
@@ -99,6 +127,18 @@
       <if test="isDelete != null" >
         is_delete = #{isDelete,jdbcType=TINYINT},
       </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteTime != null" >
+        delete_time = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="supplierId != null" >
+        supplier_id = #{supplierId,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -108,7 +148,11 @@
       category = #{category,jdbcType=VARCHAR},
       producing_area = #{producingArea,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
-      is_delete = #{isDelete,jdbcType=TINYINT}
+      is_delete = #{isDelete,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_time = #{deleteTime,jdbcType=TIMESTAMP},
+      supplier_id = #{supplierId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

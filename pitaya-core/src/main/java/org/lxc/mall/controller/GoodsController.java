@@ -1,16 +1,17 @@
 package org.lxc.mall.controller;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.lxc.mall.api.goods.IGoodsService;
 import org.lxc.mall.api.stock.IStockService;
-import org.lxc.mall.model.Goods;
-import org.lxc.mall.model.Stock;
 import org.lxc.mall.model.common.PaginationInfo;
 import org.lxc.mall.model.request.GoodsQueryCondition;
 import org.lxc.mall.model.request.GoodsWriteCondition;
+import org.lxc.mall.model.request.StockWriteCondition;
+import org.lxc.mall.model.response.Goods_DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
@@ -19,10 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @EnableAutoConfiguration
-@RequestMapping("/goods")
+@RequestMapping("/manage/goods")
 public class GoodsController {
 	
 	@Autowired
@@ -33,7 +35,7 @@ public class GoodsController {
 	
 	@RequestMapping(value="list",method=RequestMethod.POST)
 	@ResponseBody
-    public PaginationInfo<Goods> getGoodsList(@RequestBody GoodsQueryCondition query){
+    public PaginationInfo<Goods_DTO> getGoodsList(@RequestBody GoodsQueryCondition query){
 		return goodsService.queryByCondition(query);
     }
 	
@@ -41,10 +43,8 @@ public class GoodsController {
 	@ResponseBody
     public Map<String,Object> getGoodsInfo(@RequestParam Long id){
 		Map<String,Object> resultMap = new HashMap<String,Object>();
-		Goods goods = goodsService.queryById(id);
-		List<Stock> stocks = stockService.queryByGoodsId(id);
+		Goods_DTO goods = goodsService.queryById(id);
 		resultMap.put("goods", goods);
-		resultMap.put("stocks", stocks);
 		return resultMap;
     }
 	
@@ -58,6 +58,32 @@ public class GoodsController {
 	@ResponseBody
     public Long EditGoods(@RequestBody GoodsWriteCondition query){
 		return goodsService.update(query);
+    }
+	
+	@RequestMapping(value="/stock/list",method=RequestMethod.GET,params= {"goodsId"})
+	@ResponseBody
+    public Map<String,Object> getStocksByGoodsId(@RequestParam Long goodsId){
+    	Map<String,Object> resultMap = new HashMap<String,Object>();
+		resultMap.put("stocks", stockService.queryByGoodsId(goodsId));
+		return resultMap;
+    }
+    
+    @RequestMapping(value="/stock/edit",method=RequestMethod.POST)
+	@ResponseBody
+    public int editGoodsStocks(@RequestBody List<StockWriteCondition> query) throws Exception{
+    	
+		return stockService.batchEdit(query);
+		
+    }
+    
+    @RequestMapping(value="/pictures/save",method=RequestMethod.POST)
+   	@ResponseBody
+    public void savePictures(@RequestParam MultipartFile multipartFile,@RequestParam Long id) throws Exception{
+    	File f = new File(String.format("/Users/lxc/test/goods/ID_%d/%s", id,multipartFile.getOriginalFilename()));
+    	if (!f.getParentFile().exists()) {
+    		f.getParentFile().mkdirs();
+    	}
+    	multipartFile.transferTo(f);
     }
 	
 }

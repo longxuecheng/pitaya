@@ -9,7 +9,7 @@ import org.lxc.mall.model.SaleDetail;
 import org.lxc.mall.model.SaleOrder;
 import org.lxc.mall.model.common.PaginationInfo;
 import org.lxc.mall.model.request.SaleQueryCondition;
-import org.lxc.mall.sys.annotation.Permission;
+import org.lxc.mall.model.response.SaleOrder_DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
@@ -30,7 +30,7 @@ public class SaleController {
 //	@Permission(value="manage.sale.order.query")
 	@RequestMapping(value="order/list",method=RequestMethod.POST)
 	@ResponseBody
-    public PaginationInfo<SaleOrder> getSaleList(@RequestBody SaleQueryCondition query){
+    public PaginationInfo<SaleOrder_DTO> getSaleList(@RequestBody SaleQueryCondition query){
 		return saleOrderService.queryByCondition(query);
     }
 	

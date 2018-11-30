@@ -23,7 +23,7 @@ public class LoginController {
 	private UserAuthorizationRealm userAuthorizationRealm;
 	
 	@Permission(value="admin.login")
-	@RequestMapping(value="login",method=RequestMethod.POST)
+	@RequestMapping(value="/login",method=RequestMethod.POST)
 	@ResponseBody
     public Map<String,Object> login(@RequestBody LoginRequest query){
 		Map<String,Object> result = new HashMap<>();

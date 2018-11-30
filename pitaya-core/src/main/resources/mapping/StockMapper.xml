@@ -33,7 +33,7 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
   
-  <select id="selectByGoodsId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByGoodsId" parameterType="java.lang.Long" resultMap="BaseResultMap">
   	select 
   	<include refid="Base_Column_List"/>
   	from stock 

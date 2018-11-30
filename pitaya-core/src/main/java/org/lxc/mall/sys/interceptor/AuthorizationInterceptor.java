@@ -25,23 +25,23 @@ public class AuthorizationInterceptor implements HandlerInterceptor  {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		if (request.getMethod() == HttpMethod.OPTIONS.name()) {
-			return true;
-		}
-		String accessToken = getAccessToken(request);
-		if (accessToken == null) {
-			notAuthenticatedResponse(response);
-			return false;
-		}
-		UserPrincipal principal = userAuthorizationRealm.getPrincipal(accessToken);
-		if (principal == null) {
-			notAuthenticatedResponse(response);
-			return false;
-		}
-		if (!checkAuthorization(principal, handler)) {
-			notAuthorizedResponse(response);
-			return false;
-		}
+//		if (request.getMethod() == HttpMethod.OPTIONS.name()) {
+//			return true;
+//		}
+//		String accessToken = getAccessToken(request);
+//		if (accessToken == null) {
+//			notAuthenticatedResponse(response);
+//			return false;
+//		}
+//		UserPrincipal principal = userAuthorizationRealm.getPrincipal(accessToken);
+//		if (principal == null) {
+//			notAuthenticatedResponse(response);
+//			return false;
+//		}
+//		if (!checkAuthorization(principal, handler)) {
+//			notAuthorizedResponse(response);
+//			return false;
+//		}
 		return true;
 	}
 	
