@@ -18,7 +18,7 @@
     delete_time, supplier_id
   </sql>
   <select id="selectAll" resultMap="BaseResultMap">
-  	 select 
+  	select 
     <include refid="Base_Column_List" />
     from goods order by create_time desc
   </select>

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.lxc.mall.model.request.LoginRequest;
+import org.lxc.mall.model.response.Token_DTO;
 import org.lxc.mall.sys.annotation.Permission;
 import org.lxc.mall.sys.auth.UserAuthorizationRealm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,8 @@ public class LoginController {
 	@ResponseBody
     public Map<String,Object> login(@RequestBody LoginRequest query){
 		Map<String,Object> result = new HashMap<>();
-		String accessToken = userAuthorizationRealm.authenticate(query);
-		result.put("accessToken", accessToken);
+		Token_DTO token = userAuthorizationRealm.authenticate(query);
+		result.put("token", token);
 		return result;
 	}
 	

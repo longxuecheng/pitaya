@@ -48,9 +48,10 @@ public class BusinessHanlerExceptionResolver implements HandlerExceptionResolver
 		String jsonResp = JSON.toJSONString(rst);
 		try {
 			response.reset();
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setStatus(HttpStatus.OK.value());
 	        response.setContentType("application/json");
 	        response.setCharacterEncoding("utf-8");
+	        response.setHeader("Access-Control-Allow-Origin", "*");
 			response.getWriter().print(jsonResp);
 		} catch (IOException e) {
 			e.printStackTrace();

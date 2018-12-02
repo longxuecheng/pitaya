@@ -7,10 +7,13 @@ import org.lxc.mall.api.goods.IGoodsService;
 import org.lxc.mall.common.utils.time.TimeFormatter;
 import org.lxc.mall.core.exception.ProcessException;
 import org.lxc.mall.dao.GoodsMapper;
+import org.lxc.mall.dao.GoodsPhotoMapper;
 import org.lxc.mall.model.Goods;
+import org.lxc.mall.model.GoodsPhoto;
 import org.lxc.mall.model.common.PaginationInfo;
 import org.lxc.mall.model.request.GoodsQueryCondition;
 import org.lxc.mall.model.request.GoodsWriteCondition;
+import org.lxc.mall.model.response.GoodsPhoto_DTO;
 import org.lxc.mall.model.response.Goods_DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +26,13 @@ import com.github.pagehelper.PageHelper;
 @Transactional
 public class GoodsService implements IGoodsService {
 
+	private String imagePathPrefix = "http://localhost:8080/images/";
+	
 	@Autowired
 	private GoodsMapper goodsDao;
+	
+	@Autowired
+	private GoodsPhotoMapper goodsPhotoDao;
 	
 	@Override
 	public PaginationInfo<Goods_DTO> queryByCondition(GoodsQueryCondition query) {
@@ -74,9 +82,24 @@ public class GoodsService implements IGoodsService {
 	}
 	
 	@Override
-	public void savePictures() {
-		// TODO Auto-generated method stub
-		
+	public List<GoodsPhoto_DTO> getPictures(Long goodsId) {
+		List<GoodsPhoto> gps = goodsPhotoDao.selectByGoodsId(goodsId);
+		return buildGoodsPhotoDTOs(gps);
+	}
+
+	@Override
+	public void savePictures(Long goodsId,String name, String path) {
+		GoodsPhoto gp = new GoodsPhoto();
+		String httpPath = imagePathPrefix+path;
+		gp.setName(name);
+		gp.setPath(httpPath);
+		gp.setGoodsId(goodsId);
+		try {
+			goodsPhotoDao.insertSelective(gp);
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new ProcessException("上传图片%s异常",name);
+		}
 	}
 	
 	private List<Goods_DTO> buildGoodsDTOs(List<Goods> goods) {
@@ -103,6 +126,22 @@ public class GoodsService implements IGoodsService {
 		dto.setCreateTime(TimeFormatter.formatDefault(good.getCreateTime()));
 		dto.setUpdateTime(TimeFormatter.formatDefault(good.getUpdateTime()));
 		return dto;
+	}
+	
+	private List<GoodsPhoto_DTO> buildGoodsPhotoDTOs(List<GoodsPhoto> gps) {
+		if (gps == null || gps.isEmpty()) {
+			return null;
+		}
+		List<GoodsPhoto_DTO> dtos = new ArrayList<>();
+		for (GoodsPhoto gp : gps) {
+			GoodsPhoto_DTO dto = new GoodsPhoto_DTO();
+			dto.setId(gp.getId());
+			dto.setName(gp.getName());
+			dto.setPath(gp.getPath());
+			dto.setDisplayOrder(gp.getDisplayOrder());
+			dtos.add(dto);
+		}
+		return dtos;
 	}
 
 }

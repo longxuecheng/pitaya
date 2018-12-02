@@ -1,9 +1,12 @@
 package org.lxc.mall.api.goods;
 
+import java.util.List;
+
 import org.lxc.mall.core.exception.ProcessException;
 import org.lxc.mall.model.common.PaginationInfo;
 import org.lxc.mall.model.request.GoodsQueryCondition;
 import org.lxc.mall.model.request.GoodsWriteCondition;
+import org.lxc.mall.model.response.GoodsPhoto_DTO;
 import org.lxc.mall.model.response.Goods_DTO;
 
 public interface IGoodsService {
@@ -16,5 +19,7 @@ public interface IGoodsService {
 	
 	public Long update(GoodsWriteCondition query) throws ProcessException;
 	
-	public void savePictures();
+	public void savePictures(Long goodsId,String name,String path);
+	
+	public List<GoodsPhoto_DTO> getPictures(Long goodsId);
 }

@@ -11,6 +11,7 @@ import org.lxc.mall.model.common.PaginationInfo;
 import org.lxc.mall.model.request.GoodsQueryCondition;
 import org.lxc.mall.model.request.GoodsWriteCondition;
 import org.lxc.mall.model.request.StockWriteCondition;
+import org.lxc.mall.model.response.GoodsPhoto_DTO;
 import org.lxc.mall.model.response.Goods_DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -26,6 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 @EnableAutoConfiguration
 @RequestMapping("/manage/goods")
 public class GoodsController {
+	
+	private final String imageRootDir = "/usr/local/var/data/images/";
 	
 	@Autowired
 	private IGoodsService goodsService;
@@ -78,12 +81,27 @@ public class GoodsController {
     
     @RequestMapping(value="/pictures/save",method=RequestMethod.POST)
    	@ResponseBody
-    public void savePictures(@RequestParam MultipartFile multipartFile,@RequestParam Long id) throws Exception{
-    	File f = new File(String.format("/Users/lxc/test/goods/ID_%d/%s", id,multipartFile.getOriginalFilename()));
-    	if (!f.getParentFile().exists()) {
-    		f.getParentFile().mkdirs();
+    public void savePictures(@RequestParam MultipartFile[] multipartFile,@RequestParam Long id) throws Exception{
+    	for (MultipartFile mf : multipartFile) {
+    		String fileName = mf.getOriginalFilename();
+    		String subPath = String.format("goods/ID_%d/%s", id,fileName);
+        	String filePath = imageRootDir+subPath;
+        	File f = new File(filePath);
+        	if (!f.getParentFile().exists()) {
+        		f.getParentFile().mkdirs();
+        	}
+        	mf.transferTo(f);
+        	goodsService.savePictures(id,fileName, subPath);
     	}
-    	multipartFile.transferTo(f);
     }
 	
+    @RequestMapping(value="/picture/list",method=RequestMethod.GET,params= {"goodsId"})
+   	@ResponseBody
+    public Map<String, Object> getGoodsPictures(@RequestParam Long goodsId) throws Exception{
+    	Map<String,Object> result = new HashMap<>();
+    	List<GoodsPhoto_DTO> pictures = goodsService.getPictures(goodsId);
+    	result.put("pictures", pictures);
+    	return result;
+    }
+    
 }
