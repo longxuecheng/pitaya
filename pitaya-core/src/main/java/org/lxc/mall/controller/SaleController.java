@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.lxc.mall.api.sale.ISaleOrderService;
 import org.lxc.mall.model.SaleDetail;
-import org.lxc.mall.model.SaleOrder;
 import org.lxc.mall.model.common.PaginationInfo;
 import org.lxc.mall.model.request.SaleQueryCondition;
 import org.lxc.mall.model.response.SaleOrder_DTO;
@@ -39,7 +38,7 @@ public class SaleController {
 	@ResponseBody
     public Map<String,Object> getSaleInfo(@RequestParam Long id){
 		Map<String,Object> resultMap = new HashMap<String,Object>();
-		SaleOrder order = saleOrderService.queryById(id);
+		SaleOrder_DTO order = saleOrderService.queryById(id);
 		List<SaleDetail> items = saleOrderService.queryDetailsByOrderId(id);
 		resultMap.put("order", order);
 		resultMap.put("items", items);

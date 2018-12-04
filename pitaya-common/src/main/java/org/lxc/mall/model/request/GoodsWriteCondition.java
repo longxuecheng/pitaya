@@ -1,8 +1,12 @@
 package org.lxc.mall.model.request;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.lxc.mall.model.Goods;
+import org.lxc.mall.model.Stock;
 
 public class GoodsWriteCondition implements Serializable{
 	
@@ -15,6 +19,16 @@ public class GoodsWriteCondition implements Serializable{
     private String producingArea;
 
     private String description;
+    
+    List<StockWriteCondition> stocks;
+    
+	public List<StockWriteCondition> getStocks() {
+		return stocks;
+	}
+
+	public void setStocks(List<StockWriteCondition> stocks) {
+		this.stocks = stocks;
+	}
 
 	public Long getId() {
 		return id;
@@ -64,7 +78,17 @@ public class GoodsWriteCondition implements Serializable{
 		g.setName(name);
 		g.setDescription(description);
 		g.setProducingArea(producingArea);
+		g.setUpdateTime(new Date());
 		return g;
+	}
+	
+	public List<StockWriteCondition> parseStockModels(Long goodsId) {
+		for (StockWriteCondition stock : stocks) {
+			if (null == stock.getId() || stock.getId().longValue() == 0) {
+				stock.setGoodsId(goodsId);
+			}
+		}
+		return stocks;
 	}
 	
 }

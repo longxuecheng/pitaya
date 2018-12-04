@@ -19,10 +19,6 @@ public class SaleOrder implements Serializable {
 
     private String status;
 
-    private BigDecimal payAmt;
-
-    private BigDecimal orderAmt;
-
     private Byte isDelete;
 
     private String receiver;
@@ -32,6 +28,18 @@ public class SaleOrder implements Serializable {
     private String phoneNo;
 
     private Long supplierId;
+
+    private BigDecimal goodsAmt;
+
+    private BigDecimal expressFee;
+
+    private String expressMethod;
+
+    private String expressOrderNo;
+
+    private Date estimatedArrivalDate;
+
+    private BigDecimal orderAmt;
 
     private static final long serialVersionUID = 1L;
 
@@ -91,22 +99,6 @@ public class SaleOrder implements Serializable {
         this.status = status == null ? null : status.trim();
     }
 
-    public BigDecimal getPayAmt() {
-        return payAmt;
-    }
-
-    public void setPayAmt(BigDecimal payAmt) {
-        this.payAmt = payAmt;
-    }
-
-    public BigDecimal getOrderAmt() {
-        return orderAmt;
-    }
-
-    public void setOrderAmt(BigDecimal orderAmt) {
-        this.orderAmt = orderAmt;
-    }
-
     public Byte getIsDelete() {
         return isDelete;
     }
@@ -145,5 +137,53 @@ public class SaleOrder implements Serializable {
 
     public void setSupplierId(Long supplierId) {
         this.supplierId = supplierId;
+    }
+
+    public BigDecimal getGoodsAmt() {
+        return goodsAmt;
+    }
+
+    public void setGoodsAmt(BigDecimal goodsAmt) {
+        this.goodsAmt = goodsAmt;
+    }
+
+    public BigDecimal getExpressFee() {
+        return expressFee;
+    }
+
+    public void setExpressFee(BigDecimal expressFee) {
+        this.expressFee = expressFee;
+    }
+
+    public String getExpressMethod() {
+        return expressMethod;
+    }
+
+    public void setExpressMethod(String expressMethod) {
+        this.expressMethod = expressMethod == null ? null : expressMethod.trim();
+    }
+
+    public String getExpressOrderNo() {
+        return expressOrderNo;
+    }
+
+    public void setExpressOrderNo(String expressOrderNo) {
+        this.expressOrderNo = expressOrderNo == null ? null : expressOrderNo.trim();
+    }
+
+    public Date getEstimatedArrivalDate() {
+        return estimatedArrivalDate;
+    }
+
+    public void setEstimatedArrivalDate(Date estimatedArrivalDate) {
+        this.estimatedArrivalDate = estimatedArrivalDate;
+    }
+
+    public BigDecimal getOrderAmt() {
+        return orderAmt;
+    }
+
+    public void setOrderAmt(BigDecimal orderAmt) {
+        this.orderAmt = orderAmt;
     }
 }

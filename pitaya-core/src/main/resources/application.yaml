@@ -3,7 +3,10 @@ server:
 management:
   security:
     enabled: false
+    
 spring:
+    application:
+    name: pitaya
     mvc:
       static-path-pattern: /picture/**
     resources:

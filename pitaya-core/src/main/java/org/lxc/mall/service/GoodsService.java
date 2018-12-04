@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lxc.mall.api.goods.IGoodsService;
+import org.lxc.mall.api.supplier.ISupplierService;
 import org.lxc.mall.common.utils.time.TimeFormatter;
 import org.lxc.mall.core.exception.ProcessException;
 import org.lxc.mall.dao.GoodsMapper;
 import org.lxc.mall.dao.GoodsPhotoMapper;
 import org.lxc.mall.model.Goods;
 import org.lxc.mall.model.GoodsPhoto;
+import org.lxc.mall.model.Supplier;
 import org.lxc.mall.model.common.PaginationInfo;
 import org.lxc.mall.model.request.GoodsQueryCondition;
 import org.lxc.mall.model.request.GoodsWriteCondition;
@@ -25,7 +27,8 @@ import com.github.pagehelper.PageHelper;
 @Service
 @Transactional
 public class GoodsService implements IGoodsService {
-
+	
+	// HTTP prefix for static file resource
 	private String imagePathPrefix = "http://localhost:8080/images/";
 	
 	@Autowired
@@ -33,6 +36,9 @@ public class GoodsService implements IGoodsService {
 	
 	@Autowired
 	private GoodsPhotoMapper goodsPhotoDao;
+	
+	@Autowired
+	private ISupplierService supplierService;
 	
 	@Override
 	public PaginationInfo<Goods_DTO> queryByCondition(GoodsQueryCondition query) {
@@ -49,7 +55,10 @@ public class GoodsService implements IGoodsService {
 	@Override
 	public Goods_DTO queryById(Long id) {
 		Goods g = goodsDao.selectByPrimaryKey(id);
-		return installGoodsDTO(g);
+		Supplier s = supplierService.queryById(id);
+		Goods_DTO dto = installGoodsDTO(g);
+		dto.setSupplierName(s.getName());
+		return dto;
 	}
 
 	@Override

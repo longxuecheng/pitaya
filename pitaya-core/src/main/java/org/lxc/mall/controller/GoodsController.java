@@ -53,14 +53,20 @@ public class GoodsController {
 	
 	@RequestMapping(value="add",method=RequestMethod.POST)
 	@ResponseBody
-    public Long AddGoods(@RequestBody GoodsWriteCondition query){
-		return goodsService.add(query);
+    public Map<String, Object> AddGoods(@RequestBody GoodsWriteCondition query) throws Exception{
+		Map<String,Object> resultMap = new HashMap<>();
+		Long goodsId = goodsService.add(query);
+		stockService.batchEdit(query.parseStockModels(goodsId));
+		resultMap.put("id", goodsId);
+		return resultMap;
     }
 	
 	@RequestMapping(value="edit",method=RequestMethod.POST)
 	@ResponseBody
-    public Long EditGoods(@RequestBody GoodsWriteCondition query){
-		return goodsService.update(query);
+    public Long EditGoods(@RequestBody GoodsWriteCondition query) throws Exception{
+		goodsService.update(query);
+		stockService.batchEdit(query.parseStockModels(query.getId()));
+		return query.getId();
     }
 	
 	@RequestMapping(value="/stock/list",method=RequestMethod.GET,params= {"goodsId"})
@@ -74,9 +80,7 @@ public class GoodsController {
     @RequestMapping(value="/stock/edit",method=RequestMethod.POST)
 	@ResponseBody
     public int editGoodsStocks(@RequestBody List<StockWriteCondition> query) throws Exception{
-    	
 		return stockService.batchEdit(query);
-		
     }
     
     @RequestMapping(value="/pictures/save",method=RequestMethod.POST)

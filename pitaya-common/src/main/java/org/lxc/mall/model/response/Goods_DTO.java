@@ -18,6 +18,8 @@ public class Goods_DTO implements Serializable {
     private String updateTime;
 
     private Long supplierId;
+    
+    private String supplierName;
 
 	public Long getId() {
 		return id;
@@ -82,6 +84,13 @@ public class Goods_DTO implements Serializable {
 	public void setSupplierId(Long supplierId) {
 		this.supplierId = supplierId;
 	}
-    
+
+	public String getSupplierName() {
+		return supplierName;
+	}
+
+	public void setSupplierName(String supplierName) {
+		this.supplierName = supplierName;
+	}
     
 }

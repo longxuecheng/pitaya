@@ -32,7 +32,7 @@
     delete from goods
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="org.lxc.mall.model.Goods" >
+  <insert id="insert" parameterType="org.lxc.mall.model.Goods" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
     insert into goods (id, name, category, 
       producing_area, description, is_delete, 
       create_time, update_time, delete_time, 
@@ -42,7 +42,7 @@
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{deleteTime,jdbcType=TIMESTAMP}, 
       #{supplierId,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="org.lxc.mall.model.Goods" >
+  <insert id="insertSelective" parameterType="org.lxc.mall.model.Goods" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
     insert into goods
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

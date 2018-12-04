@@ -41,8 +41,9 @@ public class SaleService implements ISaleOrderService{
 	}
 
 	@Override
-	public SaleOrder queryById(Long id) {
-		return saleOrderDao.selectByPrimaryKey(id);
+	public SaleOrder_DTO queryById(Long id) {
+		SaleOrder order = saleOrderDao.selectByPrimaryKey(id);
+		return installSaleOrderDTO(order);
 	}
 
 	@Override
@@ -51,24 +52,37 @@ public class SaleService implements ISaleOrderService{
 	}
 	
 	private List<SaleOrder_DTO> buildSaleOrderDTOs(List<SaleOrder> orders) {
-		if (orders == null && orders.isEmpty()) {
+		if (orders == null || orders.isEmpty()) {
 			return null;
 		}
 		List<SaleOrder_DTO> dtos = new ArrayList<>();
 		for (SaleOrder order : orders) {
-			SaleOrder_DTO dto = new SaleOrder_DTO();
-			dto.setId(order.getId());
-			dto.setOrderNo(order.getOrderNo());
-			dto.setPayAmt(order.getPayAmt());
-			dto.setOrderAmt(order.getOrderAmt());
-			dto.setCreateTime(TimeFormatter.formatDefault(order.getCreateTime()));
-			dto.setStatus(order.getStatus());
-			dto.setReceiver(order.getReceiver());
-			dto.setAddress(order.getAddress());
-			dto.setPhoneNo(order.getPhoneNo());
-			dtos.add(dto);
+			dtos.add(installSaleOrderDTO(order));
 		}
 		return dtos;
+	}
+	
+	private SaleOrder_DTO installSaleOrderDTO(SaleOrder order) {
+		if (order == null) {
+			return null;
+		}
+		SaleOrder_DTO dto = new SaleOrder_DTO();
+		// basic information
+		dto.setId(order.getId());
+		dto.setOrderNo(order.getOrderNo());
+		dto.setOrderAmt(order.getOrderAmt());
+		dto.setGoodsAmt(order.getGoodsAmt());
+		dto.setExpressFee(order.getExpressFee());
+		dto.setCreateTime(TimeFormatter.formatDefault(order.getCreateTime()));
+		dto.setStatus(order.getStatus());
+		// express info
+		dto.setExpressMethod(order.getExpressMethod());
+		dto.setExpressOrderNo(order.getExpressOrderNo());
+		dto.setEstimatedArrivalDate(TimeFormatter.formatDefault(order.getEstimatedArrivalDate()));
+		dto.setReceiver(order.getReceiver());
+		dto.setAddress(order.getAddress());
+		dto.setPhoneNo(order.getPhoneNo());
+		return dto;
 	}
 
 }

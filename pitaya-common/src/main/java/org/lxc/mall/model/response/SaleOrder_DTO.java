@@ -19,11 +19,21 @@ public class SaleOrder_DTO implements Serializable{
 	
 	private String receiver;
 	
-	private BigDecimal payAmt;
-	
 	private BigDecimal orderAmt;
 	
 	private User_DTO user;
+	
+	private TimeGroup_DTO timeGroup;
+	
+	private BigDecimal goodsAmt;
+
+    private BigDecimal expressFee;
+
+    private String expressMethod;
+
+    private String expressOrderNo;
+
+    private String estimatedArrivalDate;
 
 	public Long getId() {
 		return id;
@@ -55,14 +65,6 @@ public class SaleOrder_DTO implements Serializable{
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public BigDecimal getPayAmt() {
-		return payAmt;
-	}
-
-	public void setPayAmt(BigDecimal payAmt) {
-		this.payAmt = payAmt;
 	}
 
 	public BigDecimal getOrderAmt() {
@@ -103,6 +105,54 @@ public class SaleOrder_DTO implements Serializable{
 
 	public void setReceiver(String receiver) {
 		this.receiver = receiver;
+	}
+
+	public TimeGroup_DTO getTimeGroup() {
+		return timeGroup;
+	}
+
+	public void setTimeGroup(TimeGroup_DTO timeGroup) {
+		this.timeGroup = timeGroup;
+	}
+
+	public BigDecimal getGoodsAmt() {
+		return goodsAmt;
+	}
+
+	public void setGoodsAmt(BigDecimal goodsAmt) {
+		this.goodsAmt = goodsAmt;
+	}
+
+	public BigDecimal getExpressFee() {
+		return expressFee;
+	}
+
+	public void setExpressFee(BigDecimal expressFee) {
+		this.expressFee = expressFee;
+	}
+
+	public String getExpressMethod() {
+		return expressMethod;
+	}
+
+	public void setExpressMethod(String expressMethod) {
+		this.expressMethod = expressMethod;
+	}
+
+	public String getExpressOrderNo() {
+		return expressOrderNo;
+	}
+
+	public void setExpressOrderNo(String expressOrderNo) {
+		this.expressOrderNo = expressOrderNo;
+	}
+
+	public String getEstimatedArrivalDate() {
+		return estimatedArrivalDate;
+	}
+
+	public void setEstimatedArrivalDate(String estimatedArrivalDate) {
+		this.estimatedArrivalDate = estimatedArrivalDate;
 	}
 
 }

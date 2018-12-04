@@ -7,28 +7,28 @@ import org.lxc.mall.model.Stock;
 
 public class StockWriteCondition implements Serializable {
     private Long id;
+    
+    private String name;
 
+    private String status;
+    
+    private String specification;
+
+    private Long goodsId;
+    
     private BigDecimal costUnitPrice;
 
     private BigDecimal saleUnitPrice;
 
     private Short discount;
 
-    private String name;
-
     private BigDecimal totalQuantity;
 
     private BigDecimal availableQuantity;
 
-    private String specification;
-
     private BigDecimal shippingFee;
 
     private Byte isRush;
-
-    private String status;
-
-    private Long goodsId;
 
     private static final long serialVersionUID = 1L;
     
