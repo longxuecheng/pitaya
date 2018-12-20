@@ -57,19 +57,26 @@ public class StockService implements IStockService {
 		List<Stock_DTO> dtos = new ArrayList<>();
 		
 		for (Stock s : stocks) {
-			Stock_DTO dto = new Stock_DTO();
-			dto.setId(s.getId());
-			dto.setTimeGroup(new TimeGroup_DTO(s.getCreatedTime(), s.getUpdatedTime(), s.getDeletedTime()));
-			dto.setAdminId(s.getAdminId());
-			dto.setAdminName(s.getAdminName());
-			dto.setGoodsId(s.getGoodsId());
-			dto.setName(s.getName());
-			dto.setCostUnitPrice(s.getCostUnitPrice());
-			dto.setSaleUnitPrice(s.getSaleUnitPrice());
-			dto.setTotalQuantity(s.getTotalQuantity());
-			dto.setAvailableQuantity(s.getAvailableQuantity());
-			dtos.add(dto);
+			dtos.add(installStockDTO(s));
 		}
 		return dtos;
+	}
+	
+	private Stock_DTO installStockDTO(Stock s) {
+		Stock_DTO dto = new Stock_DTO();
+		dto.setId(s.getId());
+		dto.setStatus(s.getStatus());
+		dto.setTimeGroup(new TimeGroup_DTO(s.getCreatedTime(), s.getUpdatedTime(), s.getDeletedTime()));
+		dto.setAdminId(s.getAdminId());
+		dto.setAdminName(s.getAdminName());
+		dto.setGoodsId(s.getGoodsId());
+		dto.setName(s.getName());
+		dto.setSpecification(s.getSpecification());
+		dto.setShippingFee(s.getShippingFee());
+		dto.setCostUnitPrice(s.getCostUnitPrice());
+		dto.setSaleUnitPrice(s.getSaleUnitPrice());
+		dto.setTotalQuantity(s.getTotalQuantity());
+		dto.setAvailableQuantity(s.getAvailableQuantity());
+		return dto;
 	}
 }

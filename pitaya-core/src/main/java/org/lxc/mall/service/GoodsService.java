@@ -17,6 +17,8 @@ import org.lxc.mall.model.request.GoodsQueryCondition;
 import org.lxc.mall.model.request.GoodsWriteCondition;
 import org.lxc.mall.model.response.GoodsPhoto_DTO;
 import org.lxc.mall.model.response.Goods_DTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +26,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
+
 @Service
 @Transactional
 public class GoodsService implements IGoodsService {
 	
+	Logger logger = LoggerFactory.getLogger(getClass());
+	
 	// HTTP prefix for static file resource
-	private String imagePathPrefix = "http://localhost:8080/images/";
+	private String imagePathPrefix = "http://192.168.1.73:8080/images/";
 	
 	@Autowired
 	private GoodsMapper goodsDao;
@@ -55,14 +60,17 @@ public class GoodsService implements IGoodsService {
 	@Override
 	public Goods_DTO queryById(Long id) {
 		Goods g = goodsDao.selectByPrimaryKey(id);
-		Supplier s = supplierService.queryById(id);
+		if ( null == g ) {
+			return null;
+		}
+		Supplier s = supplierService.queryById(g.getSupplierId());
 		Goods_DTO dto = installGoodsDTO(g);
 		dto.setSupplierName(s.getName());
 		return dto;
 	}
 
 	@Override
-	public Long add(GoodsWriteCondition query) throws ProcessException{
+	public Long add(GoodsWriteCondition query) throws Exception{
 		Goods g = query.parseModel();
 		try {
 			int affected = goodsDao.insertSelective(g);
@@ -71,13 +79,14 @@ public class GoodsService implements IGoodsService {
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-			throw new ProcessException("新增商品失败");
+			ProcessException.throwExeptionByFormat("新增商品 %s 失败", g.getName());
 		}
+		bindPictures2Goods(query.getId(), query.getPictureIds());
 		return g.getId();
 	}
 
 	@Override
-	public Long update(GoodsWriteCondition query) throws ProcessException{
+	public Long update(GoodsWriteCondition query) throws Exception{
 		Goods g = query.parseModel();
 		try {
 			int affected = goodsDao.updateByPrimaryKey(g);
@@ -85,8 +94,10 @@ public class GoodsService implements IGoodsService {
 				throw new ProcessException("更新商品信息失败");
 			}
 		}catch (Exception e) {
+			e.printStackTrace();
 			throw new ProcessException("更新商品信息失败");
 		}
+		bindPictures2Goods(query.getId(), query.getPictureIds());
 		return g.getId();
 	}
 	
@@ -97,18 +108,61 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	public void savePictures(Long goodsId,String name, String path) {
+	public GoodsPhoto_DTO savePictures(String name, String path) {
 		GoodsPhoto gp = new GoodsPhoto();
 		String httpPath = imagePathPrefix+path;
 		gp.setName(name);
 		gp.setPath(httpPath);
-		gp.setGoodsId(goodsId);
 		try {
 			goodsPhotoDao.insertSelective(gp);
+			return installGoodsPhotoDTO(gp);
 		}catch (Exception e) {
 			e.printStackTrace();
 			throw new ProcessException("上传图片%s异常",name);
 		}
+	}
+	
+	@Override
+	public int deletePicture(Long pictureId) throws Exception {
+		try {
+			return goodsPhotoDao.deleteByPrimaryKey(pictureId);
+		}catch (Exception e) {
+			e.printStackTrace();
+			ProcessException.throwExeptionByFormat("删除商品图片%d异常",pictureId);
+		}
+		return 0;
+	}
+	
+	@Override
+	public void bindPictures2Goods(Long goodsId, List<Long> pictureIds) throws Exception {
+		try {
+			if (pictureIds == null || pictureIds.isEmpty()) {
+				logger.info("-- No pictures to be bound to goods %d --",goodsId);
+				return;
+			}
+			List<GoodsPhoto> gps = goodsPhotoDao.selectByGoodsId(goodsId);
+			pictureIds.stream().filter((id) -> {
+				if (gps == null || gps.isEmpty()) {
+					return true;
+				}
+				for (GoodsPhoto gp : gps) {
+					if (gp.getId().compareTo(id) != 0) {
+						return true;
+					}
+				}
+				return false;
+			}).forEach((id) -> {
+				GoodsPhoto model = new GoodsPhoto();
+				model.setGoodsId(goodsId);
+				model.setId(id);
+				goodsPhotoDao.updateGoodsIdByPrimaryKey(model);
+			});
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			ProcessException.throwExeptionByFormat("图片绑定商品%s 异常",goodsId);
+		}
+		
 	}
 	
 	private List<Goods_DTO> buildGoodsDTOs(List<Goods> goods) {
@@ -132,6 +186,7 @@ public class GoodsService implements IGoodsService {
 		dto.setProducingArea(good.getProducingArea());
 		dto.setSupplierId(good.getSupplierId());
 		dto.setCategory(good.getCategory());
+		dto.setDescription(good.getDescription());
 		dto.setCreateTime(TimeFormatter.formatDefault(good.getCreateTime()));
 		dto.setUpdateTime(TimeFormatter.formatDefault(good.getUpdateTime()));
 		return dto;
@@ -143,14 +198,18 @@ public class GoodsService implements IGoodsService {
 		}
 		List<GoodsPhoto_DTO> dtos = new ArrayList<>();
 		for (GoodsPhoto gp : gps) {
-			GoodsPhoto_DTO dto = new GoodsPhoto_DTO();
-			dto.setId(gp.getId());
-			dto.setName(gp.getName());
-			dto.setPath(gp.getPath());
-			dto.setDisplayOrder(gp.getDisplayOrder());
-			dtos.add(dto);
+			dtos.add(installGoodsPhotoDTO(gp));
 		}
 		return dtos;
+	}
+	
+	private GoodsPhoto_DTO installGoodsPhotoDTO(GoodsPhoto gp) {
+		GoodsPhoto_DTO dto = new GoodsPhoto_DTO();
+		dto.setId(gp.getId());
+		dto.setName(gp.getName());
+		dto.setPath(gp.getPath());
+		dto.setDisplayOrder(gp.getDisplayOrder());
+		return dto;
 	}
 
 }

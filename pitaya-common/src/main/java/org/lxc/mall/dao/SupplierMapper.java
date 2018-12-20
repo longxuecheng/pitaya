@@ -14,6 +14,8 @@ public interface SupplierMapper {
     Supplier selectByPrimaryKey(Long id);
     
     List<Supplier> selectByPrimaryKeys(List<Long> ids);
+    
+    List<Supplier> selectAll();
 
     int updateByPrimaryKeySelective(Supplier record);
 

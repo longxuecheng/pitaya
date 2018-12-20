@@ -148,10 +148,7 @@
       category = #{category,jdbcType=VARCHAR},
       producing_area = #{producingArea,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
-      is_delete = #{isDelete,jdbcType=TINYINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      delete_time = #{deleteTime,jdbcType=TIMESTAMP},
       supplier_id = #{supplierId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>

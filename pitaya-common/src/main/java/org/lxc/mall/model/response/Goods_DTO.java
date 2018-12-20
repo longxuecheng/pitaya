@@ -7,6 +7,8 @@ public class Goods_DTO implements Serializable {
 
     private String name;
 
+    private String status;
+    
     private String category;
 
     private String producingArea;
@@ -91,6 +93,14 @@ public class Goods_DTO implements Serializable {
 
 	public void setSupplierName(String supplierName) {
 		this.supplierName = supplierName;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
     
 }

@@ -21,7 +21,7 @@ public class CorsMVCConfiguration extends WebMvcConfigurerAdapter{
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(AuthorizationInterceptor).addPathPatterns("/manage/sale/**");
+		registry.addInterceptor(AuthorizationInterceptor).addPathPatterns("/manage/**");
 	}
 
 	

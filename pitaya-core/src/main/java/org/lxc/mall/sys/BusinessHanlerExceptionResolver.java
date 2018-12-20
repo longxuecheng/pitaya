@@ -39,7 +39,7 @@ public class BusinessHanlerExceptionResolver implements HandlerExceptionResolver
 		ex.printStackTrace();
 		if(ex instanceof ProcessException) {
 			spe = assembleSimpleException((ProcessException)ex);
-			rst.setErrDesc("业务异常");
+			rst.setErrDesc(ex.getMessage());
 		}else {
 			spe = new SimpleException(SYS_ERROR_CODE,SYS_ERROR_DESC);
 			rst.setErrDesc("系统异常");

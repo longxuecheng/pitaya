@@ -27,4 +27,10 @@ public class SupplierService implements ISupplierService {
 		return supplierDao.selectByPrimaryKey(id);
 	}
 
+	@Override
+	public List<Supplier> queryAll() {
+		return supplierDao.selectAll();
+	}
+
+	
 }

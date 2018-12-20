@@ -9,4 +9,6 @@ public interface ISupplierService {
 	List<Supplier> queryByIds(List<Long> ids);
 	
 	Supplier queryById(Long id);
+	
+	List<Supplier> queryAll();
 }

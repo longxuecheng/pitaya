@@ -15,7 +15,7 @@ spring:
         cache: false
     datasource:
         name: myMall
-        url: jdbc:mysql://127.0.0.1:3306/myMall
+        url: jdbc:mysql://127.0.0.1:3306/myMall?useSSL=false
         username: root
         password: 6263272lxc
         # 使用druid数据源
@@ -45,3 +45,11 @@ pagehelper:
     params: count=countSql
 my:
   url: /chat
+  
+logging:
+  level:
+    org: 
+      lxc: 
+        mal: INFO
+      springframework: 
+        web: INFO

@@ -15,11 +15,15 @@ public interface IGoodsService {
 	
 	public Goods_DTO queryById(Long id);
 	
-	public Long add(GoodsWriteCondition query) throws ProcessException;
+	public Long add(GoodsWriteCondition query) throws ProcessException, Exception;
 	
-	public Long update(GoodsWriteCondition query) throws ProcessException;
+	public Long update(GoodsWriteCondition query) throws ProcessException, Exception;
 	
-	public void savePictures(Long goodsId,String name,String path);
+	public GoodsPhoto_DTO savePictures(String name,String path);
 	
 	public List<GoodsPhoto_DTO> getPictures(Long goodsId);
+	
+	public int deletePicture(Long pictureId) throws Exception;
+	
+	public void bindPictures2Goods(Long goodsId,List<Long> pictureIds) throws Exception;
 }

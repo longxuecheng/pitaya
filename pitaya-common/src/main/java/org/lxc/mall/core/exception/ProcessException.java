@@ -11,6 +11,10 @@ public class ProcessException extends RuntimeException {
 
 	public ProcessException() {
 	}
+	
+	public static void throwExeptionByFormat(String format,Object... args) throws Exception {
+		throw new ProcessException(String.format(format, args));
+	}
 
 	public ProcessException(String message) {
 		super(message);

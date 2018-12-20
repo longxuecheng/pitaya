@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.lxc.mall.sys.annotation.Permission;
 import org.lxc.mall.sys.auth.UserAuthorizationRealm;
 import org.lxc.mall.sys.auth.UserPrincipal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,8 @@ import org.springframework.web.servlet.ModelAndView;
 @Component
 public class AuthorizationInterceptor implements HandlerInterceptor  {
 	
+	Logger logger = LoggerFactory.getLogger(getClass());
+	
 	private static final String AUTHORIZATION = "Authorization";
 
 	@Autowired
@@ -25,6 +29,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor  {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
+		logger.info(String.format("-- This is INFO level test Now time %d --", System.currentTimeMillis()));
 //		if (request.getMethod() == HttpMethod.OPTIONS.name()) {
 //			return true;
 //		}

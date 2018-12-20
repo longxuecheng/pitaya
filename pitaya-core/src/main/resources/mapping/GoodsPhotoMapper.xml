@@ -16,7 +16,7 @@
   <select id="selectByGoodsId" resultMap="BaseResultMap">
 	select 
     <include refid="Base_Column_List" />
-    from goods_photo where goods_id = #{goodsId} order by id desc
+    from goods_photo where goods_id = #{goodsId} and is_delete = 0 order by id desc
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -24,10 +24,19 @@
     from goods_photo
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from goods_photo
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+  
+  <update id="deleteByPrimaryKey" parameterType="long">
+  	update goods_photo
+  	<set>
+  		is_delete = 1
+  	</set>
+  	where id = #{id}
+  </update>
+<!--   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" > -->
+<!--     delete from goods_photo -->
+<!--     where id = #{id,jdbcType=BIGINT} -->
+<!--   </delete> -->
+  
   <insert id="insert" parameterType="org.lxc.mall.model.GoodsPhoto" >
     insert into goods_photo (id, goods_id, name, 
       path, display_order, is_delete, 
@@ -36,7 +45,7 @@
       #{path,jdbcType=VARCHAR}, #{displayOrder,jdbcType=SMALLINT}, #{isDelete,jdbcType=TINYINT}, 
       #{createTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="org.lxc.mall.model.GoodsPhoto" >
+  <insert id="insertSelective" parameterType="org.lxc.mall.model.GoodsPhoto" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
     insert into goods_photo
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -85,6 +94,14 @@
       </if>
     </trim>
   </insert>
+  
+  <update id="updateGoodsIdByPrimaryKey" parameterType="org.lxc.mall.model.GoodsPhoto">
+  	 update goods_photo
+  	 <set>
+  	 	goods_id = #{goodsId,jdbcType=BIGINT}
+  	 </set>
+  	 where id = #{id}
+  </update>
   <update id="updateByPrimaryKeySelective" parameterType="org.lxc.mall.model.GoodsPhoto" >
     update goods_photo
     <set >

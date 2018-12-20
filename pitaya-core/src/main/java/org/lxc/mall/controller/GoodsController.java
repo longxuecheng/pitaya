@@ -1,6 +1,7 @@
 package org.lxc.mall.controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,8 @@ public class GoodsController {
 	
 	@RequestMapping(value="add",method=RequestMethod.POST)
 	@ResponseBody
-    public Map<String, Object> AddGoods(@RequestBody GoodsWriteCondition query) throws Exception{
+    public Map<String, Object> AddGoods(@RequestBody GoodsWriteCondition query) throws Exception {
+		query.validate();
 		Map<String,Object> resultMap = new HashMap<>();
 		Long goodsId = goodsService.add(query);
 		stockService.batchEdit(query.parseStockModels(goodsId));
@@ -63,7 +65,8 @@ public class GoodsController {
 	
 	@RequestMapping(value="edit",method=RequestMethod.POST)
 	@ResponseBody
-    public Long EditGoods(@RequestBody GoodsWriteCondition query) throws Exception{
+    public Long EditGoods(@RequestBody GoodsWriteCondition query) throws Exception {
+		query.validate();
 		goodsService.update(query);
 		stockService.batchEdit(query.parseStockModels(query.getId()));
 		return query.getId();
@@ -85,18 +88,20 @@ public class GoodsController {
     
     @RequestMapping(value="/pictures/save",method=RequestMethod.POST)
    	@ResponseBody
-    public void savePictures(@RequestParam MultipartFile[] multipartFile,@RequestParam Long id) throws Exception{
-    	for (MultipartFile mf : multipartFile) {
+    public List<GoodsPhoto_DTO> savePictures(@RequestParam MultipartFile[] file) throws Exception {
+    	List<GoodsPhoto_DTO> gpDtos = new ArrayList<>();
+    	for (MultipartFile mf : file) {
     		String fileName = mf.getOriginalFilename();
-    		String subPath = String.format("goods/ID_%d/%s", id,fileName);
+    		String subPath = String.format("goods/%s",fileName);
         	String filePath = imageRootDir+subPath;
         	File f = new File(filePath);
         	if (!f.getParentFile().exists()) {
         		f.getParentFile().mkdirs();
         	}
         	mf.transferTo(f);
-        	goodsService.savePictures(id,fileName, subPath);
+        	gpDtos.add(goodsService.savePictures(fileName, subPath));
     	}
+    	return gpDtos;
     }
 	
     @RequestMapping(value="/picture/list",method=RequestMethod.GET,params= {"goodsId"})
@@ -106,6 +111,12 @@ public class GoodsController {
     	List<GoodsPhoto_DTO> pictures = goodsService.getPictures(goodsId);
     	result.put("pictures", pictures);
     	return result;
+    }
+    
+    @RequestMapping(value="/picture/delete",method=RequestMethod.POST,params= {"pictureId"})
+   	@ResponseBody
+    public void deleteGoodsPicture(@RequestParam Long pictureId) throws Exception {
+    	goodsService.deletePicture(pictureId);
     }
     
 }
