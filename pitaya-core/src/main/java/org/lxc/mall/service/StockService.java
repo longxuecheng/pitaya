@@ -31,6 +31,17 @@ public class StockService implements IStockService {
 	public Stock queryById(Long id) {
 		return stockDao.selectByPrimaryKey(id);
 	}
+	
+	@Override
+	public List<Stock> queryByIds(List<Long> ids) {
+		return stockDao.selectByIds(ids);
+	}
+	
+	@Override
+	public List<Stock_DTO> queryAll() {
+		List<Stock> stocks = stockDao.selectAll();
+		return buildStockDTOs(stocks);
+	}
 
 	@Override
 	public int batchEdit(List<StockWriteCondition> stocks) throws Exception {
@@ -79,4 +90,5 @@ public class StockService implements IStockService {
 		dto.setAvailableQuantity(s.getAvailableQuantity());
 		return dto;
 	}
+
 }

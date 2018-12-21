@@ -28,7 +28,7 @@
     <foreach item="item" index="index" collection="ids"
       open="(" separator="," close=")">
         #{item}
-  </foreach>
+  	</foreach>
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

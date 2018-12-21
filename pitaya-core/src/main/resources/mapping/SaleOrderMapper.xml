@@ -57,7 +57,7 @@
       #{expressOrderNo,jdbcType=VARCHAR}, #{estimatedArrivalDate,jdbcType=DATE}, #{orderAmt,jdbcType=DECIMAL}
       )
   </insert>
-  <insert id="insertSelective" parameterType="org.lxc.mall.model.SaleOrder" >
+  <insert id="insertSelective" parameterType="org.lxc.mall.model.SaleOrder" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
     insert into sale_order
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

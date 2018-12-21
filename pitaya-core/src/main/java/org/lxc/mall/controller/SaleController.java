@@ -8,6 +8,7 @@ import org.lxc.mall.api.sale.ISaleOrderService;
 import org.lxc.mall.model.SaleDetail;
 import org.lxc.mall.model.common.PaginationInfo;
 import org.lxc.mall.model.request.SaleQueryCondition;
+import org.lxc.mall.model.request.SaleWriteCondition;
 import org.lxc.mall.model.response.SaleOrder_DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -43,6 +44,24 @@ public class SaleController {
 		resultMap.put("order", order);
 		resultMap.put("items", items);
 		return resultMap;
+	}
+	
+	@RequestMapping(value="order/add",method=RequestMethod.POST)
+	@ResponseBody
+    public Map<String,Object> addSaleOrder(@RequestBody SaleWriteCondition condition) throws Exception{
+		Map<String,Object> dataMap = new HashMap<>();
+		Long id = saleOrderService.add(condition);
+		dataMap.put("id", id);
+		return dataMap;
+	}
+	
+	@RequestMapping(value="order/edit",method=RequestMethod.POST)
+	@ResponseBody
+    public Map<String,Object> editSaleOrder(@RequestBody SaleWriteCondition condition) throws Exception{
+		Map<String,Object> dataMap = new HashMap<>();
+		Long id = saleOrderService.add(condition);
+		dataMap.put("id", id);
+		return dataMap;
 	}
 	
 }

@@ -1,7 +1,10 @@
 package org.lxc.mall.controller;
 
+import java.util.List;
+
 import org.lxc.mall.api.stock.IStockService;
 import org.lxc.mall.model.Stock;
+import org.lxc.mall.model.response.Stock_DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
@@ -23,5 +26,12 @@ public class StockController {
     public Stock getStockInfo(@RequestParam Long id){
 		return stockService.queryById(id);
     }
+	
+	@RequestMapping(value="list",method=RequestMethod.POST)
+	@ResponseBody
+    public List<Stock_DTO> getStocks(){
+		return stockService.queryAll();
+    }
+	
 	
 }

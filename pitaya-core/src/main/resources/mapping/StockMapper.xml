@@ -25,7 +25,21 @@
     specification, shipping_fee, is_rush, status, created_time, updated_time, deleted_time, 
     admin_id, admin_name, goods_id
   </sql>
-  
+  <select id="selectAll" resultMap="BaseResultMap" >
+  	 select 
+    <include refid="Base_Column_List" />
+    from stock
+  </select>
+  <select id="selectByIds" parameterType="list" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from stock
+    where id in 
+    <foreach item="item" index="index" collection="list"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
