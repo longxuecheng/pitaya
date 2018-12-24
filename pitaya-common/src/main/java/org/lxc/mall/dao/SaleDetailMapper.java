@@ -14,6 +14,8 @@ public interface SaleDetailMapper {
     SaleDetail selectByPrimaryKey(Long id);
     
     List<SaleDetail> selectByOrderId(Long orderId);
+    
+    List<SaleDetail> selectByIds(List<Long> ids);
 
     int updateByPrimaryKeySelective(SaleDetail record);
 

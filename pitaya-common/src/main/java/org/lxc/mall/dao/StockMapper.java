@@ -14,6 +14,10 @@ public interface StockMapper {
     Stock selectByPrimaryKey(Long id);
     
     List<Stock> selectByGoodsId(Long goodsId);
+    
+    List<Stock> selectByIds(List<Long> ids);
+    
+    List<Stock> selectAll();
 
     int updateByPrimaryKeySelective(Stock record);
 

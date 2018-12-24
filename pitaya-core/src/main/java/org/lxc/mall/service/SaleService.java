@@ -3,6 +3,7 @@ package org.lxc.mall.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.lxc.mall.api.sale.ISaleOrderService;
 import org.lxc.mall.api.stock.IStockService;
@@ -71,63 +72,133 @@ public class SaleService implements ISaleOrderService{
 		return dto;
 	}
 	
-	private SaleOrder installSaleOrder(SaleWriteCondition condition) {
-		SaleOrder order = new SaleOrder();
+	private void setSaleOrder(SaleWriteCondition condition,SaleOrder order) {
 		order.setSupplierId(condition.getSupplierId());
 		order.setReceiver(condition.getReceiver());
 		order.setAddress(condition.getAddress());
 		order.setPhoneNo(condition.getPhoneNo());
 		order.setExpressMethod(condition.getExpressMethod());
 		order.setExpressOrderNo(condition.getExpressOrderNo());
-		order.setOrderAmt(condition.getOrderAmt());
-		order.setGoodsAmt(condition.getGoodsAmt());
 		order.setExpressFee(condition.getExpressFee());
+		order.setStatus(condition.getStatus());
 		order.setUserId(0l);
-		return order;
 	}
 	
-	@Override
-	public Long add(SaleWriteCondition condition) throws Exception {
-		SaleOrder so = installSaleOrder(condition);
-		List<Stock> stocks = stockService.queryByIds(condition.getStockIds());
-		List<SaleDetail> sds = new ArrayList<>(condition.getDetails().size());
-		BigDecimal orderAmt = BigDecimal.ZERO;
-		BigDecimal goodsAmt = BigDecimal.ZERO;
-		for (SaleDetailWriteCondition sdwc : condition.getDetails()) {
-			for (Stock stock : stocks) {
-				if (stock.getId().equals(sdwc.getStockId())) {
-					SaleDetail sd = new SaleDetail();
-					sd.setCostUnitPrice(stock.getCostUnitPrice());
-					sd.setSaleUnitPrice(stock.getSaleUnitPrice());
-					sd.setGoodsId(stock.getGoodsId());
-					sd.setStockId(stock.getId());
-					sd.setGoodsName(stock.getName());
-					sd.setGoodsQuantity(sdwc.getGoodsQuantity());
-					sds.add(sd);
-					goodsAmt = goodsAmt.add(stock.getSaleUnitPrice().multiply(sdwc.getGoodsQuantity()));
-					break;
-				}
-			}
-		}
-		orderAmt = orderAmt.add(goodsAmt).add(condition.getExpressFee());
+	private SaleDetail installSaleDetail(Stock stock,Long id ,BigDecimal quantity) {
+		SaleDetail sd = new SaleDetail();
+		sd.setId(id);
+		sd.setCostUnitPrice(stock.getCostUnitPrice());
+		sd.setSaleUnitPrice(stock.getSaleUnitPrice());
+		sd.setGoodsId(stock.getGoodsId());
+		sd.setStockId(stock.getId());
+		sd.setGoodsName(stock.getName());
+		sd.setGoodsQuantity(quantity);
+		return sd;
+	}
+	
+	protected void addSaleDetails(Long orderId,List<SaleDetail> saleDetails) throws Exception {
 		try {
-			saleOrderDao.insertSelective(so);
-		}catch (Exception e) {
-			e.printStackTrace();
-			ProcessException.throwExeptionByFormat("新增销售订单异常");
-		}
-		try {
-			sds.stream().forEach((saleDetail) -> {
-				saleDetail.setOrderId(so.getId());
+			saleDetails.stream().forEach((saleDetail) -> {
+				saleDetail.setOrderId(orderId);
 				saleDetailDao.insertSelective(saleDetail);
 			});
 		}catch (Exception e) {
 			e.printStackTrace();
 			ProcessException.throwExeptionByFormat("新增订单明细异常");
 		}
+	}
+	
+	@Override
+	public Long add(SaleWriteCondition condition) throws Exception {
+		SaleOrder so = new SaleOrder();
+		setSaleOrder(condition,so);
+		Map<Long, Stock> stockMap = stockService.queryMapByIds(condition.getStockIds());
+		List<SaleDetail> sds = new ArrayList<>(condition.getDetails().size());
+		BigDecimal orderAmt = BigDecimal.ZERO;
+		BigDecimal goodsAmt = BigDecimal.ZERO;
+		for (SaleDetailWriteCondition sdwc : condition.getDetails()) {
+			Stock stock = stockMap.get(sdwc.getStockId());
+			if (stock != null) {
+				sds.add(installSaleDetail(stock, null, sdwc.getGoodsQuantity()));
+				goodsAmt = goodsAmt.add(stock.getSaleUnitPrice().multiply(sdwc.getGoodsQuantity()));
+			}
+		}
+		orderAmt = goodsAmt.add(condition.getExpressFee());
+		so.setOrderAmt(orderAmt);
+		so.setGoodsAmt(goodsAmt);
+		try {
+			saleOrderDao.insertSelective(so);
+		}catch (Exception e) {
+			e.printStackTrace();
+			ProcessException.throwExeptionByFormat("新增销售订单异常");
+		}
+		addSaleDetails(so.getId(),sds);
 		return so.getId();
 	}
 
+	@Override
+	public Long edit(SaleWriteCondition condition) throws Exception {
+		Map<Long, Stock> stockMap = stockService.queryMapByIds(condition.getStockIds());
+		List<SaleDetail> details2Add = new ArrayList<>();
+		List<SaleDetail> details2Edit = new ArrayList<>();
+		List<Long> detailsIds2Edit = new ArrayList<>();
+		BigDecimal orderAmt = BigDecimal.ZERO;
+		BigDecimal goodsAmt = BigDecimal.ZERO;
+		for (SaleDetailWriteCondition sdwc : condition.getDetails()) {
+			// 加总商品金额
+			Stock stock = stockMap.get(sdwc.getStockId());
+			if (stock != null) {
+				goodsAmt = goodsAmt.add(stock.getSaleUnitPrice().multiply(sdwc.getGoodsQuantity()));
+			}
+			// 筛选待更新的订单明细
+			if (sdwc.getId() != null && sdwc.getId() > 0) {
+				detailsIds2Edit.add(sdwc.getId());
+				details2Edit.add(installSaleDetail(stock,sdwc.getId(),sdwc.getGoodsQuantity()));
+			}
+			// 筛选待新增的订单明细
+			if (sdwc.getId() == null || sdwc.getId() == 0) {
+				if (stock != null) {
+					details2Add.add(installSaleDetail(stock,null,sdwc.getGoodsQuantity()));
+				}
+			}
+			
+		}
+		orderAmt = goodsAmt.add(condition.getExpressFee());
+		
+		try {
+			SaleOrder so = saleOrderDao.selectByPrimaryKey(condition.getId());
+			setSaleOrder(condition, so);
+			so.setOrderAmt(orderAmt);
+			so.setGoodsAmt(goodsAmt);
+			saleOrderDao.updateByPrimaryKey(so);
+		}catch (Exception e) {
+			e.printStackTrace();
+			ProcessException.throwExeptionByFormat("更新销售订单异常");
+		}
+		List<SaleDetail> originDetails2Edit = saleDetailDao.selectByIds(detailsIds2Edit);
+		try {
+			originDetails2Edit.stream().forEach((detail) -> {
+				for (SaleDetail detal2Edit : details2Edit) {
+					if (detal2Edit.getId().equals(detail.getId())) {
+						detail.setCostUnitPrice(detal2Edit.getCostUnitPrice());
+						detail.setSaleUnitPrice(detal2Edit.getSaleUnitPrice());
+						detail.setGoodsId(detal2Edit.getGoodsId());
+						detail.setStockId(detal2Edit.getId());
+						detail.setGoodsName(detal2Edit.getGoodsName());
+						detail.setGoodsQuantity(detal2Edit.getGoodsQuantity());
+						break;
+					}
+				}
+				saleDetailDao.updateByPrimaryKey(detail);
+			});
+		}catch (Exception e) {
+			e.printStackTrace();
+			ProcessException.throwExeptionByFormat("更新订单明细异常");
+		}
+		
+		return condition.getId();
+	}
+	
 	@Override
 	public PaginationInfo<SaleOrder_DTO> queryByCondition(SaleQueryCondition query) {
 		PaginationInfo<SaleOrder_DTO> page = new PaginationInfo<>();
@@ -150,5 +221,4 @@ public class SaleService implements ISaleOrderService{
 	public List<SaleDetail> queryDetailsByOrderId(Long orderId) {
 		return saleDetailDao.selectByOrderId(orderId);
 	}
-	
 }
