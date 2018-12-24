@@ -1,5 +1,7 @@
 package org.lxc.mall.dao;
 
+import java.util.List;
+
 import org.lxc.mall.model.User;
 
 public interface UserMapper {
@@ -10,6 +12,8 @@ public interface UserMapper {
     int insertSelective(User record);
 
     User selectByPrimaryKey(Integer id);
+    
+    List<User> selectAll();
 
     int updateByPrimaryKeySelective(User record);
 
