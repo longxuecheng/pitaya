@@ -37,7 +37,7 @@
       #{email,jdbcType=VARCHAR}, #{wechatId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{deleteTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="org.lxc.mall.model.User" >
+  <insert id="insertSelective" parameterType="org.lxc.mall.model.User" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

@@ -3,9 +3,9 @@ package org.lxc.mall.model;
 import java.io.Serializable;
 
 public class UserAddress implements Serializable {
-    private Long id;
+    private Integer id;
 
-    private Long userId;
+    private Integer userId;
 
     private String address;
 
@@ -15,19 +15,19 @@ public class UserAddress implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
