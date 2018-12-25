@@ -14,6 +14,11 @@
   <sql id="Base_Column_List" >
     id, name, phone_no, email, wechat_id, create_time, update_time, delete_time
   </sql>
+  <select id="selectAll" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from user order by create_time desc
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
