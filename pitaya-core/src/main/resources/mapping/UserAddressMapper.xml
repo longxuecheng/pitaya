@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="org.lxc.mall.dao.UserAddressMapper" >
   <resultMap id="BaseResultMap" type="org.lxc.mall.model.UserAddress" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="address" property="address" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="phone_no" property="phoneNo" jdbcType="VARCHAR" />
@@ -11,23 +11,29 @@
   <sql id="Base_Column_List" >
     id, user_id, address, name, phone_no
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from user_address
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_address
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_address
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="org.lxc.mall.model.UserAddress" >
     insert into user_address (id, user_id, address, 
       name, phone_no)
-    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, 
       #{name,jdbcType=VARCHAR}, #{phoneNo,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="org.lxc.mall.model.UserAddress" >
+  <insert id="insertSelective" parameterType="org.lxc.mall.model.UserAddress" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
     insert into user_address
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -48,10 +54,10 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=BIGINT},
+        #{id,jdbcType=INTEGER},
       </if>
       <if test="userId != null" >
-        #{userId,jdbcType=BIGINT},
+        #{userId,jdbcType=INTEGER},
       </if>
       <if test="address != null" >
         #{address,jdbcType=VARCHAR},
@@ -68,7 +74,7 @@
     update user_address
     <set >
       <if test="userId != null" >
-        user_id = #{userId,jdbcType=BIGINT},
+        user_id = #{userId,jdbcType=INTEGER},
       </if>
       <if test="address != null" >
         address = #{address,jdbcType=VARCHAR},
@@ -80,14 +86,14 @@
         phone_no = #{phoneNo,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="org.lxc.mall.model.UserAddress" >
     update user_address
-    set user_id = #{userId,jdbcType=BIGINT},
+    set user_id = #{userId,jdbcType=INTEGER},
       address = #{address,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
       phone_no = #{phoneNo,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

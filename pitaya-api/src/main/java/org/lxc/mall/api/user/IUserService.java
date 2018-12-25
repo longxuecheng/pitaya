@@ -12,7 +12,7 @@ public interface IUserService {
 	
 	public User_DTO queryById(Integer id);
 	
-	public Long add(UserWriteCondition query) throws ProcessException, Exception;
+	public Integer add(UserWriteCondition query) throws ProcessException, Exception;
 	
-	public Long update(UserWriteCondition query) throws ProcessException, Exception;
+	public Integer update(UserWriteCondition query) throws ProcessException, Exception;
 }

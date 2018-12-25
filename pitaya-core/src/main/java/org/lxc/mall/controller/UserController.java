@@ -6,6 +6,7 @@ import java.util.Map;
 import org.lxc.mall.api.user.IUserService;
 import org.lxc.mall.model.common.PaginationInfo;
 import org.lxc.mall.model.request.UserQueryCondition;
+import org.lxc.mall.model.request.UserWriteCondition;
 import org.lxc.mall.model.response.User_DTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -38,6 +39,22 @@ public class UserController {
 		User_DTO user = userService.queryById(id);
 		resultMap.put("user", user);
 		return resultMap;
+    }
+    
+    @RequestMapping(value="add",method=RequestMethod.POST)
+	@ResponseBody
+    public Map<String, Object> AddUser(@RequestBody UserWriteCondition query) throws Exception {
+		Map<String,Object> resultMap = new HashMap<>();
+		Integer userId = userService.add(query);
+		resultMap.put("id", userId);
+		return resultMap;
+    }
+    
+    @RequestMapping(value="edit",method=RequestMethod.POST)
+	@ResponseBody
+    public Integer EditUser(@RequestBody UserWriteCondition query) throws Exception {
+    	userService.update(query);
+		return query.getId();
     }
 	
 }

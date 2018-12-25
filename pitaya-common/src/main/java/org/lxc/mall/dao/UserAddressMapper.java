@@ -1,15 +1,19 @@
 package org.lxc.mall.dao;
 
+import java.util.List;
+
 import org.lxc.mall.model.UserAddress;
 
 public interface UserAddressMapper {
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(Integer id);
 
     int insert(UserAddress record);
 
     int insertSelective(UserAddress record);
 
-    UserAddress selectByPrimaryKey(Long id);
+    UserAddress selectByPrimaryKey(Integer id);
+    
+    List<UserAddress> selectByUserId(Integer userId);
 
     int updateByPrimaryKeySelective(UserAddress record);
 

@@ -2,26 +2,17 @@ package org.lxc.mall.model.response;
 
 import java.io.Serializable;
 
-public class User_DTO implements Serializable{
+public class UserAddress_DTO implements Serializable{
 	
 	private Integer id;
-	
-	private String name;
-	
-	private String phoneNo;
-	
-	private String email;
-	
-	private String wechat_id;
 
+    private Integer userId;
 
-	public String getWechat_id() {
-		return wechat_id;
-	}
+    private String address;
 
-	public void setWechat_id(String wechat_id) {
-		this.wechat_id = wechat_id;
-	}
+    private String name;
+
+    private String phoneNo;
 
 	public Integer getId() {
 		return id;
@@ -29,6 +20,22 @@ public class User_DTO implements Serializable{
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public String getName() {
@@ -46,14 +53,4 @@ public class User_DTO implements Serializable{
 	public void setPhoneNo(String phoneNo) {
 		this.phoneNo = phoneNo;
 	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	
 }

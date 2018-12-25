@@ -67,15 +67,33 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Long add(UserWriteCondition query) throws ProcessException, Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public Integer add(UserWriteCondition query) throws ProcessException, Exception {
+		User u = query.parseModel();
+		try {
+			int affected = userDao.insertSelective(u);
+			if (affected == 0) {
+				throw new ProcessException("新增用户失败");
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			ProcessException.throwExeptionByFormat("新增用户 %s 失败", u.getName());
+		}
+		return u.getId();
 	}
 
 	@Override
-	public Long update(UserWriteCondition query) throws ProcessException, Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public Integer update(UserWriteCondition query) throws ProcessException, Exception {
+		User u = query.parseModel();
+		try {
+			int affected = userDao.updateByPrimaryKeySelective(u);
+			if (affected == 0) {
+				throw new ProcessException("更新用户失败");
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			ProcessException.throwExeptionByFormat("更新用户 %s 失败", u.getName());
+		}
+		return u.getId();
 	}
 	
 }

@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.lxc.mall.core.exception.ProcessException;
 import org.lxc.mall.core.exception.SimpleException;
 import org.lxc.mall.model.common.RespDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -25,6 +27,8 @@ import com.alibaba.fastjson.JSON;
  */
 @Component
 public class BusinessHanlerExceptionResolver implements HandlerExceptionResolver{
+	
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final String SYS_ERROR_CODE = "sys-999";
 	
@@ -36,7 +40,7 @@ public class BusinessHanlerExceptionResolver implements HandlerExceptionResolver
 		RespDTO<SimpleException> rst = new RespDTO<>();
 		rst.errorResult();
 		SimpleException spe = null;
-		ex.printStackTrace();
+		logger.error("异常捕获:{}", ex);
 		if(ex instanceof ProcessException) {
 			spe = assembleSimpleException((ProcessException)ex);
 			rst.setErrDesc(ex.getMessage());
