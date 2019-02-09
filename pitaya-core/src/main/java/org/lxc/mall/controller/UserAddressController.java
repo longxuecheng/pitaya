@@ -36,7 +36,7 @@ public class UserAddressController {
     public Map<String, Object> EditUserAddress(@RequestBody UserAddressWriteCondition query) throws Exception {
 		Map<String,Object> resultMap = new HashMap<>();
 		Integer id = 0;
-		if(query.getId() != null) {
+		if(query.getId() != null && query.getId() != 0 ) {
 			id = userAddressService.update(query);
 		}else {
 			id = userAddressService.add(query);
