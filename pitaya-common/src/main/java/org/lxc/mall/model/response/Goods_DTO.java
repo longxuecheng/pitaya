@@ -1,6 +1,9 @@
 package org.lxc.mall.model.response;
 
 import java.io.Serializable;
+import java.util.List;
+
+import org.lxc.mall.model.GoodsSpecification;
 
 public class Goods_DTO implements Serializable {
 	private Long id;
@@ -9,7 +12,7 @@ public class Goods_DTO implements Serializable {
 
     private String status;
     
-    private String category;
+    private Integer category;
 
     private String producingArea;
 
@@ -22,6 +25,26 @@ public class Goods_DTO implements Serializable {
     private Long supplierId;
     
     private String supplierName;
+    
+    private String listPicUrl;
+    
+    private List<GoodsSpecification> specifications;
+    
+	public List<GoodsSpecification> getSpecifications() {
+		return specifications;
+	}
+
+	public void setSpecifications(List<GoodsSpecification> specifications) {
+		this.specifications = specifications;
+	}
+
+	public String getListPicUrl() {
+		return listPicUrl;
+	}
+
+	public void setListPicUrl(String listPicUrl) {
+		this.listPicUrl = listPicUrl;
+	}
 
 	public Long getId() {
 		return id;
@@ -39,11 +62,11 @@ public class Goods_DTO implements Serializable {
 		this.name = name;
 	}
 
-	public String getCategory() {
+	public Integer getCategory() {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	public void setCategory(Integer category) {
 		this.category = category;
 	}
 

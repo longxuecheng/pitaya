@@ -1,6 +1,7 @@
 package org.lxc.mall.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class Goods implements Serializable {
@@ -8,11 +9,7 @@ public class Goods implements Serializable {
 
     private String name;
 
-    private String category;
-
     private String producingArea;
-
-    private String description;
 
     private Byte isDelete;
 
@@ -23,6 +20,18 @@ public class Goods implements Serializable {
     private Date deleteTime;
 
     private Long supplierId;
+
+    private Integer categoryId;
+
+    private String listPicUrl;
+
+    private BigDecimal retailPrice;
+
+    private String status;
+
+    private String briefDescription;
+
+    private String description;
 
     private static final long serialVersionUID = 1L;
 
@@ -42,28 +51,12 @@ public class Goods implements Serializable {
         this.name = name == null ? null : name.trim();
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category == null ? null : category.trim();
-    }
-
     public String getProducingArea() {
         return producingArea;
     }
 
     public void setProducingArea(String producingArea) {
         this.producingArea = producingArea == null ? null : producingArea.trim();
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
     }
 
     public Byte getIsDelete() {
@@ -104,5 +97,53 @@ public class Goods implements Serializable {
 
     public void setSupplierId(Long supplierId) {
         this.supplierId = supplierId;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getListPicUrl() {
+        return listPicUrl;
+    }
+
+    public void setListPicUrl(String listPicUrl) {
+        this.listPicUrl = listPicUrl == null ? null : listPicUrl.trim();
+    }
+
+    public BigDecimal getRetailPrice() {
+        return retailPrice;
+    }
+
+    public void setRetailPrice(BigDecimal retailPrice) {
+        this.retailPrice = retailPrice;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
+    }
+
+    public String getBriefDescription() {
+        return briefDescription;
+    }
+
+    public void setBriefDescription(String briefDescription) {
+        this.briefDescription = briefDescription == null ? null : briefDescription.trim();
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description == null ? null : description.trim();
     }
 }

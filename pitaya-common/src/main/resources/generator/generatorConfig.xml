@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
-	<classPathEntry location="/Users/lxc/JavaHome/maven_repos/mysql/mysql-connector-java/5.1.44/mysql-connector-java-5.1.44.jar"/> 
+	<classPathEntry location="/Users/lxc/JavaHome/maven_repos/mysql/mysql-connector-java/5.1.44/mysql-connector-java-5.1.44.jar"/>
     <context id="DB2Tables"  targetRuntime="MyBatis3">
     	 <!-- 生成的pojo，将implements Serializable-->    
 	    <plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>    
@@ -13,7 +13,7 @@
             <property name="suppressAllComments" value="true"/>
         </commentGenerator>
         <!--数据库链接URL，用户名、密码 -->
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://127.0.0.1:3306/myMall" userId="root" password="6263272lxc">
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://127.0.0.1:3305/myMall" userId="root" password="6263272lxc">
         </jdbcConnection>
         <javaTypeResolver>
             <property name="forceBigDecimals" value="true"/>
@@ -43,7 +43,13 @@
        <!--  <table tableName="admin" domainObjectName="Admin" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
        </table> -->
        <!-- <table tableName="goods" domainObjectName="Goods" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-        </table> -->
+       </table> -->
+<!--        <table tableName="goods_specification" domainObjectName="GoodsSpecification" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"> -->
+<!--        </table> -->
+	  <!--  <table tableName="goods_category" domainObjectName="GoodsCategory" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+       </table> -->
+       <table tableName="supplier_warehouse" domainObjectName="SupplierWarehouse" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+       </table>
       <!--  <table tableName="goods_photo" domainObjectName="GoodsPhoto" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
        </table> -->
        <!--  <table tableName="stock" domainObjectName="Stock" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
@@ -53,6 +59,15 @@
 <!--        <table tableName="express_order" domainObjectName="ExpressOrder" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"> -->
 <!--        </table> -->
 <!-- 		<table tableName="supplier" domainObjectName="Supplier" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"> -->
+<!-- 		</table> -->
+
+<!-- 		<table tableName="specification" domainObjectName="Specification" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"> -->
+<!-- 		</table> -->
+		
+<!-- 		<table tableName="attribute_category" domainObjectName="AttributeCategory" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"> -->
+<!-- 		</table> -->
+		
+<!-- 		<table tableName="attribute" domainObjectName="Attribute" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"> -->
 <!-- 		</table> -->
     </context>
 </generatorConfiguration>

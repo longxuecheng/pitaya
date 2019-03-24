@@ -38,6 +38,7 @@ public class StockService implements IStockService {
 	private Stock_DTO installStockDTO(Stock s) {
 		Stock_DTO dto = new Stock_DTO();
 		dto.setId(s.getId());
+		dto.setWarehouseId(s.getWarehouseId());
 		dto.setStatus(s.getStatus());
 		dto.setTimeGroup(new TimeGroup_DTO(s.getCreatedTime(), s.getUpdatedTime(), s.getDeletedTime()));
 		dto.setAdminId(s.getAdminId());

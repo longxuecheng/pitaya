@@ -38,8 +38,18 @@ public class Stock implements Serializable {
     private String adminName;
 
     private Long goodsId;
+    
+    private Integer warehouseId;
+    
+    public Integer getWarehouseId() {
+		return warehouseId;
+	}
 
-    private static final long serialVersionUID = 1L;
+	public void setWarehouseId(Integer warehouseId) {
+		this.warehouseId = warehouseId;
+	}
+
+	private static final long serialVersionUID = 1L;
 
     public Long getId() {
         return id;

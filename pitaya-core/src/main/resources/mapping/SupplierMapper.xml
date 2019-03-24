@@ -40,7 +40,7 @@
     delete from supplier
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="org.lxc.mall.model.Supplier" >
+  <insert id="insert" parameterType="org.lxc.mall.model.Supplier" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
     insert into supplier (id, name, address, 
       phone_no, email, license, 
       tel, contact_name, remark

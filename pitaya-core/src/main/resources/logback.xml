@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-<!-- <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> -->
-<!-- 	<encoder> -->
-<!-- 		<pattern> -->
-<!-- 			%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n -->
-<!-- 		</pattern> -->
-<!-- 	</encoder> -->
-<!-- </appender> -->
-<!-- <logger name="root" level="INFO"/> -->
+<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+	<encoder>
+		<pattern>
+			%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+		</pattern>
+	</encoder>
+</appender>
+<logger name="root" level="INFO"/>
 
 <!-- <timestamp key="byDate" datePattern="yyyyMMdd"/> -->
 
@@ -19,24 +19,24 @@
 <!--    </encoder> -->
 <!-- </appender> -->
 
-<appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
- <file>pitaya.log</file>
- <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+<!-- <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender"> -->
+<!--  <file>pitaya.log</file> -->
+<!--  <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> -->
    <!-- rollover daily -->
-   <fileNamePattern>pitaya-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-    <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
-     <maxFileSize>100MB</maxFileSize>    
-     <maxHistory>60</maxHistory>
-     <totalSizeCap>20GB</totalSizeCap>
-  </rollingPolicy>
-  <encoder>
-    <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-  </encoder>
-</appender>
+<!--    <fileNamePattern>pitaya-%d{yyyy-MM-dd}.%i.log</fileNamePattern> -->
+<!--     each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
+<!--      <maxFileSize>100MB</maxFileSize>     -->
+<!--      <maxHistory>60</maxHistory> -->
+<!--      <totalSizeCap>20GB</totalSizeCap> -->
+<!--   </rollingPolicy> -->
+<!--   <encoder> -->
+<!--     <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern> -->
+<!--   </encoder> -->
+<!-- </appender> -->
 
 
 <root level="INFO">
-	<appender-ref ref="ROLLING" />
+	<appender-ref ref="STDOUT" />
 </root>
 
 </configuration>

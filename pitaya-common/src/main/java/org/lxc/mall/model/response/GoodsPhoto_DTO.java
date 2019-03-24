@@ -8,6 +8,8 @@ public class GoodsPhoto_DTO implements Serializable {
     private String name;
 
     private String path;
+    
+    private String link;
 
     private Short displayOrder;
 
@@ -37,6 +39,7 @@ public class GoodsPhoto_DTO implements Serializable {
 
 	public void setPath(String path) {
 		this.path = path;
+		this.link = path;
 	}
 
 	public Short getDisplayOrder() {

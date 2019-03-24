@@ -40,7 +40,7 @@ public class BusinessHanlerExceptionResolver implements HandlerExceptionResolver
 		RespDTO<SimpleException> rst = new RespDTO<>();
 		rst.errorResult();
 		SimpleException spe = null;
-		logger.error("异常捕获:{}", ex);
+		logger.error("异常捕获:{}", ex.getCause());
 		if(ex instanceof ProcessException) {
 			spe = assembleSimpleException((ProcessException)ex);
 			rst.setErrDesc(ex.getMessage());

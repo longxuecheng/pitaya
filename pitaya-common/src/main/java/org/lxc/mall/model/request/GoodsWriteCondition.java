@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.lxc.mall.core.exception.ProcessException;
 import org.lxc.mall.model.Goods;
+import org.lxc.mall.model.GoodsSpecification;
 import org.springframework.util.StringUtils;
 
 public class GoodsWriteCondition implements Serializable{
@@ -15,7 +16,7 @@ public class GoodsWriteCondition implements Serializable{
 
     private String name;
 
-    private String category;
+    private Integer categoryId;
 
     private String producingArea;
 
@@ -25,8 +26,20 @@ public class GoodsWriteCondition implements Serializable{
     
     private List<Long> pictureIds;
     
+    private String listPicUrl;
+    
     private List<StockWriteCondition> stocks;
     
+    private List<GoodsSpecification> specifications;
+    
+	public List<GoodsSpecification> getSpecifications() {
+		return specifications;
+	}
+
+	public void setSpecifications(List<GoodsSpecification> specifications) {
+		this.specifications = specifications;
+	}
+
 	public List<StockWriteCondition> getStocks() {
 		return stocks;
 	}
@@ -59,12 +72,12 @@ public class GoodsWriteCondition implements Serializable{
 		this.name = name;
 	}
 
-	public String getCategory() {
-		return category;
+	public Integer getCategoryId() {
+		return categoryId;
 	}
 
-	public void setCategory(String category) {
-		this.category = category;
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	public String getProducingArea() {
@@ -91,14 +104,23 @@ public class GoodsWriteCondition implements Serializable{
 		this.supplierId = supplierId;
 	}
 
+	public String getListPicUrl() {
+		return listPicUrl;
+	}
+
+	public void setListPicUrl(String listPicUrl) {
+		this.listPicUrl = listPicUrl;
+	}
+
 	public Goods parseModel() {
 		Goods g = new Goods();
 		g.setIsDelete(Byte.valueOf("0"));
 		g.setId(id);
 		g.setSupplierId(supplierId);
-		g.setCategory(category);
+		g.setCategoryId(categoryId);
 		g.setName(name);
 		g.setDescription(description);
+		g.setListPicUrl(listPicUrl);
 		g.setProducingArea(producingArea);
 		g.setUpdateTime(new Date());
 		return g;
@@ -111,7 +133,7 @@ public class GoodsWriteCondition implements Serializable{
 		if (StringUtils.isEmpty(name)) {
 			throw new ProcessException("请输入商品名称");
 		}
-		if (StringUtils.isEmpty(category)) {
+		if (categoryId == null || categoryId == 0) {
 			throw new ProcessException("请输入商品类别");
 		}
 		if (StringUtils.isEmpty(producingArea)) {
@@ -124,7 +146,7 @@ public class GoodsWriteCondition implements Serializable{
 	
 	private void validateStocks() throws Exception {
 		for (StockWriteCondition stock : stocks) {
-			if (StringUtils.isEmpty(stock.getSpecification())) {
+			if (stock.getSpecifications() == null || stock.getSpecifications().size() == 0 ) {
 				throw new ProcessException("请定义库存的规格");
 			}
 			
@@ -146,12 +168,11 @@ public class GoodsWriteCondition implements Serializable{
 		return stocks;
 	}
 	
-	public static void main(String[] args) {
-		List<StockWriteCondition> cs = new ArrayList<>();
-		StockWriteCondition c1 = new StockWriteCondition();
-		c1.setGoodsId(1l);
-		cs.add(c1);
-		cs.stream().map((c) -> {c.setName("test");return c;}).forEach((c) -> c.setGoodsId(120l));
-		cs.forEach((c) -> System.out.println(c.getGoodsId()+c.getName()));
+	public List<GoodsSpecification> parseGoodsSpecifications(Long goodsId){
+		for (GoodsSpecification spec : specifications) {
+			spec.setGoodsId(goodsId);
+		}
+		return specifications;
 	}
+	
 }

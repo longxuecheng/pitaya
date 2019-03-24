@@ -9,8 +9,10 @@ import org.lxc.mall.common.utils.time.TimeFormatter;
 import org.lxc.mall.core.exception.ProcessException;
 import org.lxc.mall.dao.GoodsMapper;
 import org.lxc.mall.dao.GoodsPhotoMapper;
+import org.lxc.mall.dao.GoodsSpecificationMapper;
 import org.lxc.mall.model.Goods;
 import org.lxc.mall.model.GoodsPhoto;
+import org.lxc.mall.model.GoodsSpecification;
 import org.lxc.mall.model.Supplier;
 import org.lxc.mall.model.common.PaginationInfo;
 import org.lxc.mall.model.request.GoodsQueryCondition;
@@ -33,14 +35,14 @@ public class GoodsService implements IGoodsService {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
-	// HTTP prefix for static file resource
-	private String imagePathPrefix = "http://192.168.1.73:8080/images/";
-	
 	@Autowired
 	private GoodsMapper goodsDao;
 	
 	@Autowired
 	private GoodsPhotoMapper goodsPhotoDao;
+	
+	@Autowired
+	private GoodsSpecificationMapper goodsSpecificationDao;
 	
 	@Autowired
 	private ISupplierService supplierService;
@@ -63,9 +65,14 @@ public class GoodsService implements IGoodsService {
 		if ( null == g ) {
 			return null;
 		}
+		
+		List<GoodsSpecification> goodsSpecifications = goodsSpecificationDao.selectByGoodsId(id);
 		Supplier s = supplierService.queryById(g.getSupplierId());
 		Goods_DTO dto = installGoodsDTO(g);
-		dto.setSupplierName(s.getName());
+		dto.setSpecifications(goodsSpecifications);
+		if (s != null) {
+			dto.setSupplierName(s.getName());
+		}
 		return dto;
 	}
 
@@ -81,7 +88,16 @@ public class GoodsService implements IGoodsService {
 			e.printStackTrace();
 			ProcessException.throwExeptionByFormat("新增商品 %s 失败", g.getName());
 		}
-		bindPictures2Goods(query.getId(), query.getPictureIds());
+		bindPictures2Goods(g.getId(), query.getPictureIds());
+		try {
+			for (GoodsSpecification spec : query.parseGoodsSpecifications(g.getId())) {
+				goodsSpecificationDao.insert(spec);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			ProcessException.throwExeptionByFormat("新增商品 %s 添加规格失败:", g.getName());
+		}
+		
 		return g.getId();
 	}
 
@@ -89,7 +105,7 @@ public class GoodsService implements IGoodsService {
 	public Long update(GoodsWriteCondition query) throws Exception{
 		Goods g = query.parseModel();
 		try {
-			int affected = goodsDao.updateByPrimaryKey(g);
+			int affected = goodsDao.updateByPrimaryKeySelective(g);
 			if (affected == 0) {
 				throw new ProcessException("更新商品信息失败");
 			}
@@ -98,6 +114,31 @@ public class GoodsService implements IGoodsService {
 			throw new ProcessException("更新商品信息失败");
 		}
 		bindPictures2Goods(query.getId(), query.getPictureIds());
+		try {
+			List<GoodsSpecification> gsfs = goodsSpecificationDao.selectByGoodsId(query.getId());
+			for (GoodsSpecification gsf : gsfs) {
+				boolean delFlag = true;
+				for (GoodsSpecification spec : query.parseGoodsSpecifications(g.getId())) {
+					if (spec.getId() == null || spec.getId() == 0  ) {
+						goodsSpecificationDao.insert(spec);
+					}else {
+						goodsSpecificationDao.updateByPrimaryKeySelective(spec);
+					}
+					
+					if (gsf.getId() == spec.getId()) {
+						delFlag = false;
+					}
+				}
+				// 如果找不到提交列表中包含有已经存在的规格定义，则删除
+				if (delFlag) {
+				    goodsSpecificationDao.deleteByPrimaryKey(gsf.getId());
+				}
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			ProcessException.throwExeptionByFormat("新增商品 %s 添加规格失败:", g.getName());
+		}
 		return g.getId();
 	}
 	
@@ -108,9 +149,8 @@ public class GoodsService implements IGoodsService {
 	}
 
 	@Override
-	public GoodsPhoto_DTO savePictures(String name, String path) {
+	public GoodsPhoto_DTO savePictures(String name, String httpPath) {
 		GoodsPhoto gp = new GoodsPhoto();
-		String httpPath = imagePathPrefix+path;
 		gp.setName(name);
 		gp.setPath(httpPath);
 		try {
@@ -183,12 +223,14 @@ public class GoodsService implements IGoodsService {
 		Goods_DTO dto = new Goods_DTO();
 		dto.setId(good.getId());
 		dto.setName(good.getName());
+		dto.setStatus(good.getStatus());
 		dto.setProducingArea(good.getProducingArea());
 		dto.setSupplierId(good.getSupplierId());
-		dto.setCategory(good.getCategory());
 		dto.setDescription(good.getDescription());
+		dto.setCategory(good.getCategoryId());
 		dto.setCreateTime(TimeFormatter.formatDefault(good.getCreateTime()));
 		dto.setUpdateTime(TimeFormatter.formatDefault(good.getUpdateTime()));
+		dto.setListPicUrl(good.getListPicUrl());
 		return dto;
 	}
 	

@@ -4,27 +4,38 @@
   <resultMap id="BaseResultMap" type="org.lxc.mall.model.Goods" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="category" property="category" jdbcType="VARCHAR" />
     <result column="producing_area" property="producingArea" jdbcType="VARCHAR" />
-    <result column="description" property="description" jdbcType="VARCHAR" />
     <result column="is_delete" property="isDelete" jdbcType="TINYINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="supplier_id" property="supplierId" jdbcType="BIGINT" />
+    <result column="category_id" property="categoryId" jdbcType="INTEGER" />
+    <result column="list_pic_url" property="listPicUrl" jdbcType="VARCHAR" />
+    <result column="retail_price" property="retailPrice" jdbcType="DECIMAL" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="brief_description" property="briefDescription" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="org.lxc.mall.model.Goods" extends="BaseResultMap" >
+    <result column="description" property="description" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, category, producing_area, description, is_delete, create_time, update_time, 
-    delete_time, supplier_id
+    id, name, producing_area, is_delete, create_time, update_time, delete_time, supplier_id, 
+    category_id, list_pic_url, retail_price, status, brief_description
+  </sql>
+  <sql id="Blob_Column_List" >
+    description
   </sql>
   <select id="selectAll" resultMap="BaseResultMap">
   	select 
     <include refid="Base_Column_List" />
-    from goods order by create_time desc
+    from goods order by id desc
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
     from goods
     where id = #{id,jdbcType=BIGINT}
   </select>
@@ -32,17 +43,19 @@
     delete from goods
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="org.lxc.mall.model.Goods" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
-    insert into goods (id, name, category, 
-      producing_area, description, is_delete, 
-      create_time, update_time, delete_time, 
-      supplier_id)
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, 
-      #{producingArea,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{isDelete,jdbcType=TINYINT}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{deleteTime,jdbcType=TIMESTAMP}, 
-      #{supplierId,jdbcType=BIGINT})
+  <insert id="insert" parameterType="org.lxc.mall.model.Goods" >
+    insert into goods (id, name, producing_area, 
+      is_delete, create_time, update_time, 
+      delete_time, supplier_id, category_id, 
+      list_pic_url, retail_price, status, 
+      brief_description, description)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{producingArea,jdbcType=VARCHAR}, 
+      #{isDelete,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteTime,jdbcType=TIMESTAMP}, #{supplierId,jdbcType=BIGINT}, #{categoryId,jdbcType=INTEGER}, 
+      #{listPicUrl,jdbcType=VARCHAR}, #{retailPrice,jdbcType=DECIMAL}, #{status,jdbcType=VARCHAR}, 
+      #{briefDescription,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="org.lxc.mall.model.Goods" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+  <insert id="insertSelective" parameterType="org.lxc.mall.model.Goods" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
     insert into goods
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -51,14 +64,8 @@
       <if test="name != null" >
         name,
       </if>
-      <if test="category != null" >
-        category,
-      </if>
       <if test="producingArea != null" >
         producing_area,
-      </if>
-      <if test="description != null" >
-        description,
       </if>
       <if test="isDelete != null" >
         is_delete,
@@ -75,6 +82,24 @@
       <if test="supplierId != null" >
         supplier_id,
       </if>
+      <if test="categoryId != null" >
+        category_id,
+      </if>
+      <if test="listPicUrl != null" >
+        list_pic_url,
+      </if>
+      <if test="retailPrice != null" >
+        retail_price,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="briefDescription != null" >
+        brief_description,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -83,14 +108,8 @@
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="category != null" >
-        #{category,jdbcType=VARCHAR},
-      </if>
       <if test="producingArea != null" >
         #{producingArea,jdbcType=VARCHAR},
-      </if>
-      <if test="description != null" >
-        #{description,jdbcType=VARCHAR},
       </if>
       <if test="isDelete != null" >
         #{isDelete,jdbcType=TINYINT},
@@ -107,6 +126,24 @@
       <if test="supplierId != null" >
         #{supplierId,jdbcType=BIGINT},
       </if>
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="listPicUrl != null" >
+        #{listPicUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="retailPrice != null" >
+        #{retailPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="briefDescription != null" >
+        #{briefDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=LONGVARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="org.lxc.mall.model.Goods" >
@@ -115,14 +152,8 @@
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="category != null" >
-        category = #{category,jdbcType=VARCHAR},
-      </if>
       <if test="producingArea != null" >
         producing_area = #{producingArea,jdbcType=VARCHAR},
-      </if>
-      <if test="description != null" >
-        description = #{description,jdbcType=VARCHAR},
       </if>
       <if test="isDelete != null" >
         is_delete = #{isDelete,jdbcType=TINYINT},
@@ -139,17 +170,58 @@
       <if test="supplierId != null" >
         supplier_id = #{supplierId,jdbcType=BIGINT},
       </if>
+      <if test="categoryId != null" >
+        category_id = #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="listPicUrl != null" >
+        list_pic_url = #{listPicUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="retailPrice != null" >
+        retail_price = #{retailPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="briefDescription != null" >
+        brief_description = #{briefDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=LONGVARCHAR},
+      </if>
     </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.lxc.mall.model.Goods" >
+    update goods
+    set name = #{name,jdbcType=VARCHAR},
+      producing_area = #{producingArea,jdbcType=VARCHAR},
+      is_delete = #{isDelete,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_time = #{deleteTime,jdbcType=TIMESTAMP},
+      supplier_id = #{supplierId,jdbcType=BIGINT},
+      category_id = #{categoryId,jdbcType=INTEGER},
+      list_pic_url = #{listPicUrl,jdbcType=VARCHAR},
+      retail_price = #{retailPrice,jdbcType=DECIMAL},
+      status = #{status,jdbcType=VARCHAR},
+      brief_description = #{briefDescription,jdbcType=VARCHAR},
+      description = #{description,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="org.lxc.mall.model.Goods" >
     update goods
     set name = #{name,jdbcType=VARCHAR},
-      category = #{category,jdbcType=VARCHAR},
       producing_area = #{producingArea,jdbcType=VARCHAR},
-      description = #{description,jdbcType=VARCHAR},
+      is_delete = #{isDelete,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      supplier_id = #{supplierId,jdbcType=BIGINT}
+      delete_time = #{deleteTime,jdbcType=TIMESTAMP},
+      supplier_id = #{supplierId,jdbcType=BIGINT},
+      category_id = #{categoryId,jdbcType=INTEGER},
+      list_pic_url = #{listPicUrl,jdbcType=VARCHAR},
+      retail_price = #{retailPrice,jdbcType=DECIMAL},
+      status = #{status,jdbcType=VARCHAR},
+      brief_description = #{briefDescription,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

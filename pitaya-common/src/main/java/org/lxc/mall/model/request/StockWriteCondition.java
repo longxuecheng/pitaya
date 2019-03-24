@@ -2,6 +2,7 @@ package org.lxc.mall.model.request;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.lxc.mall.model.Stock;
 
@@ -12,7 +13,7 @@ public class StockWriteCondition implements Serializable {
 
     private String status;
     
-    private String specification;
+    private List<String> specifications;
 
     private Long goodsId;
     
@@ -29,6 +30,16 @@ public class StockWriteCondition implements Serializable {
     private BigDecimal shippingFee;
 
     private Byte isRush;
+    
+    private Integer warehouseId;
+    
+    public Integer getWarehouseId() {
+		return warehouseId;
+	}
+
+	public void setWarehouseId(Integer warehouseId) {
+		this.warehouseId = warehouseId;
+	}
 
     private static final long serialVersionUID = 1L;
     
@@ -40,16 +51,26 @@ public class StockWriteCondition implements Serializable {
     	s.setSaleUnitPrice(saleUnitPrice);
     	s.setDiscount(discount);
     	s.setName(name);
-    	s.setTotalQuantity(totalQuantity);
+    	s.setTotalQuantity(availableQuantity);
     	s.setAvailableQuantity(availableQuantity);
-    	s.setSpecification(specification);
+    	s.setSpecification(String.join("_", specifications));
     	s.setShippingFee(shippingFee);
     	s.setIsRush(isRush);
     	s.setStatus(status);
+    	s.setWarehouseId(warehouseId);
     	return s;
     }
 
-    public Long getId() {
+    
+    public List<String> getSpecifications() {
+		return specifications;
+	}
+
+    public void setSpecifications(List<String> specifications) {
+		this.specifications = specifications;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -103,14 +124,6 @@ public class StockWriteCondition implements Serializable {
 
     public void setAvailableQuantity(BigDecimal availableQuantity) {
         this.availableQuantity = availableQuantity;
-    }
-
-    public String getSpecification() {
-        return specification;
-    }
-
-    public void setSpecification(String specification) {
-        this.specification = specification == null ? null : specification.trim();
     }
 
     public BigDecimal getShippingFee() {

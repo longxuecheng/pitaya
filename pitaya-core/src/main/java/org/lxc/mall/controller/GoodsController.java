@@ -1,11 +1,15 @@
 package org.lxc.mall.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.bouncycastle.util.Strings;
 import org.lxc.mall.api.goods.IGoodsService;
 import org.lxc.mall.api.stock.IStockService;
 import org.lxc.mall.model.common.PaginationInfo;
@@ -14,6 +18,7 @@ import org.lxc.mall.model.request.GoodsWriteCondition;
 import org.lxc.mall.model.request.StockWriteCondition;
 import org.lxc.mall.model.response.GoodsPhoto_DTO;
 import org.lxc.mall.model.response.Goods_DTO;
+import org.lxc.mall.service.basic.TencentCOSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
@@ -29,13 +34,14 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/manage/goods")
 public class GoodsController {
 	
-	private final String imageRootDir = "/usr/local/var/data/images/";
-	
 	@Autowired
 	private IGoodsService goodsService;
 	
 	@Autowired
 	private IStockService stockService;
+	
+	@Autowired
+	private TencentCOSService tencentCOSService;
 	
 	@RequestMapping(value="list",method=RequestMethod.POST)
 	@ResponseBody
@@ -58,7 +64,6 @@ public class GoodsController {
 		query.validate();
 		Map<String,Object> resultMap = new HashMap<>();
 		Long goodsId = goodsService.add(query);
-		stockService.batchEdit(query.parseStockModels(goodsId));
 		resultMap.put("id", goodsId);
 		return resultMap;
     }
@@ -68,7 +73,6 @@ public class GoodsController {
     public Long EditGoods(@RequestBody GoodsWriteCondition query) throws Exception {
 		query.validate();
 		goodsService.update(query);
-		stockService.batchEdit(query.parseStockModels(query.getId()));
 		return query.getId();
     }
 	
@@ -86,20 +90,28 @@ public class GoodsController {
 		return stockService.batchEdit(query);
     }
     
+    /**
+     * 
+     * According to {@linkplain https://jpuri.github.io/react-draft-wysiwyg/#/docs}.
+     * like { data: { link: <THE_URL>}} 
+     * @param request
+     * @param file
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value="/pictures/save",method=RequestMethod.POST)
    	@ResponseBody
-    public List<GoodsPhoto_DTO> savePictures(@RequestParam MultipartFile[] file) throws Exception {
+    public List<GoodsPhoto_DTO> savePictures(HttpServletRequest request,@RequestParam MultipartFile[] file) throws Exception {
     	List<GoodsPhoto_DTO> gpDtos = new ArrayList<>();
     	for (MultipartFile mf : file) {
     		String fileName = mf.getOriginalFilename();
-    		String subPath = String.format("goods/%s",fileName);
-        	String filePath = imageRootDir+subPath;
-        	File f = new File(filePath);
-        	if (!f.getParentFile().exists()) {
-        		f.getParentFile().mkdirs();
-        	}
-        	mf.transferTo(f);
-        	gpDtos.add(goodsService.savePictures(fileName, subPath));
+    		String[] nameArray = fileName.split("\\.");
+    		String fileType = nameArray[1];
+    		File tmpFile = File.createTempFile(nameArray[0], fileType);
+    		mf.transferTo(tmpFile);
+        	String fileURL = tencentCOSService.saveGoodsSource(fileName, tmpFile);
+        	gpDtos.add(goodsService.savePictures(fileName, fileURL));
+        	tmpFile.delete();
     	}
     	return gpDtos;
     }
@@ -119,4 +131,9 @@ public class GoodsController {
     	goodsService.deletePicture(pictureId);
     }
     
+    public static void main(String[] args) throws IOException {
+    	String fileName = "dove";
+    	String[] ss = fileName.split("\\.");
+    	
+	}
 }
