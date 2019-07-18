@@ -6,14 +6,14 @@
     <result column="order_id" property="orderId" jdbcType="BIGINT" />
     <result column="goods_id" property="goodsId" jdbcType="BIGINT" />
     <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
-    <result column="goods_quantity" property="goodsQuantity" jdbcType="DECIMAL" />
+    <result column="quantity" property="quantity" jdbcType="DECIMAL" />
     <result column="cost_unit_price" property="costUnitPrice" jdbcType="DECIMAL" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="stock_id" property="stockId" jdbcType="BIGINT" />
     <result column="sale_unit_price" property="saleUnitPrice" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, order_id, goods_id, goods_name, goods_quantity, cost_unit_price, remark, stock_id, 
+    id, order_id, goods_id, goods_name, quantity, cost_unit_price, remark, stock_id, 
     sale_unit_price
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -21,6 +21,17 @@
     <include refid="Base_Column_List" />
     from sale_detail
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectByIds" parameterType="list" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from sale_detail
+    where id in 
+    <foreach item="item" index="index" collection="list"
+      open="(" separator="," close=")">
+        #{item}
+  	</foreach>
   </select>
   
   <select id="selectByOrderId" parameterType="long" resultMap="BaseResultMap">
@@ -36,11 +47,11 @@
   </delete>
   <insert id="insert" parameterType="org.lxc.mall.model.SaleDetail" >
     insert into sale_detail (id, order_id, goods_id, 
-      goods_name, goods_quantity, cost_unit_price, 
+      goods_name, quantity, cost_unit_price, 
       remark, stock_id, sale_unit_price
       )
     values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=BIGINT}, #{goodsId,jdbcType=BIGINT}, 
-      #{goodsName,jdbcType=VARCHAR}, #{goodsQuantity,jdbcType=DECIMAL}, #{costUnitPrice,jdbcType=DECIMAL}, 
+      #{goodsName,jdbcType=VARCHAR}, #{quantity,jdbcType=DECIMAL}, #{costUnitPrice,jdbcType=DECIMAL}, 
       #{remark,jdbcType=VARCHAR}, #{stockId,jdbcType=BIGINT}, #{saleUnitPrice,jdbcType=DECIMAL}
       )
   </insert>
@@ -59,8 +70,8 @@
       <if test="goodsName != null" >
         goods_name,
       </if>
-      <if test="goodsQuantity != null" >
-        goods_quantity,
+      <if test="quantity != null" >
+        quantity,
       </if>
       <if test="costUnitPrice != null" >
         cost_unit_price,
@@ -88,8 +99,8 @@
       <if test="goodsName != null" >
         #{goodsName,jdbcType=VARCHAR},
       </if>
-      <if test="goodsQuantity != null" >
-        #{goodsQuantity,jdbcType=DECIMAL},
+      <if test="quantity != null" >
+        #{quantity,jdbcType=DECIMAL},
       </if>
       <if test="costUnitPrice != null" >
         #{costUnitPrice,jdbcType=DECIMAL},
@@ -117,8 +128,8 @@
       <if test="goodsName != null" >
         goods_name = #{goodsName,jdbcType=VARCHAR},
       </if>
-      <if test="goodsQuantity != null" >
-        goods_quantity = #{goodsQuantity,jdbcType=DECIMAL},
+      <if test="quantity != null" >
+        quantity = #{quantity,jdbcType=DECIMAL},
       </if>
       <if test="costUnitPrice != null" >
         cost_unit_price = #{costUnitPrice,jdbcType=DECIMAL},
@@ -140,7 +151,7 @@
     set order_id = #{orderId,jdbcType=BIGINT},
       goods_id = #{goodsId,jdbcType=BIGINT},
       goods_name = #{goodsName,jdbcType=VARCHAR},
-      goods_quantity = #{goodsQuantity,jdbcType=DECIMAL},
+      quantity = #{quantity,jdbcType=DECIMAL},
       cost_unit_price = #{costUnitPrice,jdbcType=DECIMAL},
       remark = #{remark,jdbcType=VARCHAR},
       stock_id = #{stockId,jdbcType=BIGINT},

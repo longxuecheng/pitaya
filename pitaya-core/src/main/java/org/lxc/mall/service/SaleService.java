@@ -2,6 +2,7 @@ package org.lxc.mall.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,9 @@ public class SaleService implements ISaleOrderService{
 	
 	@Autowired
 	private IStockService stockService;
+	
+	@Autowired
+	private PaymentService paymentService;
 	
 	private List<SaleOrder_DTO> buildSaleOrderDTOs(List<SaleOrder> orders) {
 		if (orders == null || orders.isEmpty()) {
@@ -92,7 +96,7 @@ public class SaleService implements ISaleOrderService{
 		sd.setGoodsId(stock.getGoodsId());
 		sd.setStockId(stock.getId());
 		sd.setGoodsName(stock.getName());
-		sd.setGoodsQuantity(quantity);
+		sd.setQuantity(quantity);
 		return sd;
 	}
 	
@@ -119,8 +123,8 @@ public class SaleService implements ISaleOrderService{
 		for (SaleDetailWriteCondition sdwc : condition.getDetails()) {
 			Stock stock = stockMap.get(sdwc.getStockId());
 			if (stock != null) {
-				sds.add(installSaleDetail(stock, null, sdwc.getGoodsQuantity()));
-				goodsAmt = goodsAmt.add(stock.getSaleUnitPrice().multiply(sdwc.getGoodsQuantity()));
+				sds.add(installSaleDetail(stock, null, sdwc.getQuantity()));
+				goodsAmt = goodsAmt.add(stock.getSaleUnitPrice().multiply(sdwc.getQuantity()));
 			}
 		}
 		orderAmt = goodsAmt.add(condition.getExpressFee());
@@ -148,17 +152,17 @@ public class SaleService implements ISaleOrderService{
 			// 加总商品金额
 			Stock stock = stockMap.get(sdwc.getStockId());
 			if (stock != null) {
-				goodsAmt = goodsAmt.add(stock.getSaleUnitPrice().multiply(sdwc.getGoodsQuantity()));
+				goodsAmt = goodsAmt.add(stock.getSaleUnitPrice().multiply(sdwc.getQuantity()));
 			}
 			// 筛选待更新的订单明细
 			if (sdwc.getId() != null && sdwc.getId() > 0) {
 				detailsIds2Edit.add(sdwc.getId());
-				details2Edit.add(installSaleDetail(stock,sdwc.getId(),sdwc.getGoodsQuantity()));
+				details2Edit.add(installSaleDetail(stock,sdwc.getId(),sdwc.getQuantity()));
 			}
 			// 筛选待新增的订单明细
 			if (sdwc.getId() == null || sdwc.getId() == 0) {
 				if (stock != null) {
-					details2Add.add(installSaleDetail(stock,null,sdwc.getGoodsQuantity()));
+					details2Add.add(installSaleDetail(stock,null,sdwc.getQuantity()));
 				}
 			}
 			
@@ -170,7 +174,8 @@ public class SaleService implements ISaleOrderService{
 			setSaleOrder(condition, so);
 			so.setOrderAmt(orderAmt);
 			so.setGoodsAmt(goodsAmt);
-			saleOrderDao.updateByPrimaryKey(so);
+			so.setUpdateTime(new Date());
+			saleOrderDao.updateByPrimaryKeySelective(so);
 		}catch (Exception e) {
 			e.printStackTrace();
 			ProcessException.throwExeptionByFormat("更新销售订单异常");
@@ -185,7 +190,7 @@ public class SaleService implements ISaleOrderService{
 						detail.setGoodsId(detal2Edit.getGoodsId());
 						detail.setStockId(detal2Edit.getId());
 						detail.setGoodsName(detal2Edit.getGoodsName());
-						detail.setGoodsQuantity(detal2Edit.getGoodsQuantity());
+						detail.setQuantity(detal2Edit.getQuantity());
 						break;
 					}
 				}
@@ -220,5 +225,17 @@ public class SaleService implements ISaleOrderService{
 	@Override
 	public List<SaleDetail> queryDetailsByOrderId(Long orderId) {
 		return saleDetailDao.selectByOrderId(orderId);
+	}
+
+	@Override
+	public void pay(Long id) throws Exception {
+		SaleOrder order = saleOrderDao.selectByPrimaryKey(id);
+		if (!order.payable()) {
+			ProcessException.throwExeptionByFormat("Now order is not payable");
+		}
+		paymentService.payOffline(order.getOrderAmt(), order.getOrderNo(), order.getId());
+		order.setStatus(SaleOrder.OrderStatus.PAYED.code());
+		order.update();
+		saleOrderDao.updateByPrimaryKeySelective(order);
 	}
 }

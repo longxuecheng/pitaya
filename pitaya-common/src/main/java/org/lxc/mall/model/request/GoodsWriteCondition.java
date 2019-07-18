@@ -1,10 +1,11 @@
 package org.lxc.mall.model.request;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.util.Strings;
 import org.lxc.mall.core.exception.ProcessException;
 import org.lxc.mall.model.Goods;
 import org.lxc.mall.model.GoodsSpecification;
@@ -15,11 +16,15 @@ public class GoodsWriteCondition implements Serializable{
     private Long id;
 
     private String name;
+    
+    private BigDecimal retailPrice;
 
     private Integer categoryId;
 
     private String producingArea;
 
+    private String briefDescription;
+    
     private String description;
     
     private Long supplierId;
@@ -54,6 +59,22 @@ public class GoodsWriteCondition implements Serializable{
 
 	public void setPictureIds(List<Long> pictureIds) {
 		this.pictureIds = pictureIds;
+	}
+
+	public String getBriefDescription() {
+		return briefDescription;
+	}
+
+	public void setBriefDescription(String briefDescription) {
+		this.briefDescription = briefDescription;
+	}
+
+	public BigDecimal getRetailPrice() {
+		return retailPrice;
+	}
+
+	public void setRetailPrice(BigDecimal retailPrice) {
+		this.retailPrice = retailPrice;
 	}
 
 	public Long getId() {
@@ -119,7 +140,9 @@ public class GoodsWriteCondition implements Serializable{
 		g.setSupplierId(supplierId);
 		g.setCategoryId(categoryId);
 		g.setName(name);
+		g.setRetailPrice(retailPrice);
 		g.setDescription(description);
+		g.setBriefDescription(briefDescription);
 		g.setListPicUrl(listPicUrl);
 		g.setProducingArea(producingArea);
 		g.setUpdateTime(new Date());
@@ -171,6 +194,9 @@ public class GoodsWriteCondition implements Serializable{
 	public List<GoodsSpecification> parseGoodsSpecifications(Long goodsId){
 		for (GoodsSpecification spec : specifications) {
 			spec.setGoodsId(goodsId);
+			if (spec.getPicUrl() == null) {
+				spec.setPicUrl(Strings.EMPTY);
+			}
 		}
 		return specifications;
 	}

@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = {"org.lxc.*"})
 @MapperScan("org.lxc.*.dao")
 @EnableTransactionManagement
+//@EnableDiscoveryClient
+//@EnableHystrix
 public class Application {
 
 	public static void main(String[] args) {

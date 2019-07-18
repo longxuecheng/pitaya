@@ -1,0 +1,24 @@
+server:
+  port: 8070
+  
+spring:
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+  application:
+    name: pitaya-sms
+
+management:
+  server:
+    port: 4452
+    
+tencent:
+   sms:
+     app-id: 1400199194
+     app-key: 1f04eb107fe39d6493306e8c22a1a25e
+    

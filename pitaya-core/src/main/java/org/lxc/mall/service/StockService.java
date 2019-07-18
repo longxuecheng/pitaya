@@ -7,7 +7,9 @@ import java.util.Map;
 
 import org.lxc.mall.api.stock.IStockService;
 import org.lxc.mall.core.exception.ProcessException;
+import org.lxc.mall.dao.GoodsMapper;
 import org.lxc.mall.dao.StockMapper;
+import org.lxc.mall.model.Goods;
 import org.lxc.mall.model.Stock;
 import org.lxc.mall.model.request.StockWriteCondition;
 import org.lxc.mall.model.response.Stock_DTO;
@@ -22,6 +24,9 @@ public class StockService implements IStockService {
 
 	@Autowired
 	private StockMapper stockDao;
+	
+	@Autowired
+	private GoodsMapper goodsDao;
 	
 	private List<Stock_DTO> buildStockDTOs(List<Stock> stocks) {
 		if (stocks == null || stocks.isEmpty()) {
@@ -79,8 +84,10 @@ public class StockService implements IStockService {
 	@Override
 	public int batchEdit(List<StockWriteCondition> stocks) throws Exception {
 		try {
+			Goods g = goodsDao.selectByPrimaryKey(stocks.get(0).getGoodsId());
 			for (StockWriteCondition s : stocks) {
-				Stock dbStock = s.parseModel();
+				StockCreator sc = new StockCreator(s,g.getSupplierId());
+				Stock dbStock = sc.transfer();
 				if (dbStock.getId() != null && dbStock.getId().longValue() != 0) {
 					stockDao.updateByPrimaryKeySelective(dbStock);
 				}else {
@@ -105,6 +112,39 @@ public class StockService implements IStockService {
 			return stockMap;
 		}
 		return null;
+	}
+	
+	private static class StockCreator {
+
+		private StockWriteCondition stock;
+		
+		private Long supplierId;
+
+		public StockCreator(StockWriteCondition stock,Long supplierId) {
+			this.stock = stock;
+			this.supplierId = supplierId;
+		}
+		
+		public Stock transfer() {
+			Stock s = new Stock();
+	    	s.setId(stock.getId());
+	    	s.setSupplierId(supplierId);
+	    	s.setGoodsId(stock.getGoodsId());
+	    	s.setCostUnitPrice(stock.getCostUnitPrice());
+	    	s.setSaleUnitPrice(stock.getSaleUnitPrice());
+	    	s.setDiscount(stock.getDiscount());
+	    	s.setName(stock.getName());
+	    	s.setTotalQuantity(stock.getAvailableQuantity());
+	    	s.setAvailableQuantity(stock.getAvailableQuantity());
+	    	s.setSpecification(String.join("_", stock.getSpecifications()));
+	    	s.setShippingFee(stock.getShippingFee());
+	    	s.setIsRush(stock.getIsRush());
+	    	s.setStatus(stock.getStatus());
+	    	s.setWarehouseId(stock.getWarehouseId());
+	    	return s;
+			
+		}
+		
 	}
 
 }

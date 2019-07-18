@@ -11,8 +11,11 @@ public class RespDTO<T> implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	private String status = SUCCESS;
+	
 	private String errDesc;
+	
 	private T data;
 	
 	public void errorResult() {
@@ -47,4 +50,10 @@ public class RespDTO<T> implements Serializable{
 	public boolean isSuccess() {
 		return SUCCESS.equals(this.status);
 	}
+	@Override
+	public String toString() {
+		return "RespDTO [status=" + status + ", errDesc=" + errDesc + "]";
+	}
+	
+	
 }

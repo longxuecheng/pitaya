@@ -19,4 +19,6 @@ public interface ISaleOrderService {
 	public Long add(SaleWriteCondition condition) throws Exception;
 	
 	public Long edit(SaleWriteCondition condition) throws Exception;
+	
+	public void pay(Long id) throws Exception;
 }

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.lxc.mall.model.request.LoginRequest;
 import org.lxc.mall.model.response.Token_DTO;
-import org.lxc.mall.sys.annotation.Permission;
 import org.lxc.mall.sys.auth.UserAuthorizationRealm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -23,7 +22,6 @@ public class LoginController {
 	@Autowired
 	private UserAuthorizationRealm userAuthorizationRealm;
 	
-	@Permission(value="admin.login")
 	@RequestMapping(value="/login",method=RequestMethod.POST)
 	@ResponseBody
     public Map<String,Object> login(@RequestBody LoginRequest query){

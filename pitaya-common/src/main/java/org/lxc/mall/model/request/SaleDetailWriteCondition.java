@@ -14,11 +14,11 @@ public class SaleDetailWriteCondition implements Serializable {
   	
   	private Long stockId;
   	
-  	private BigDecimal goodsQuantity;
+  	private BigDecimal quantity = BigDecimal.ZERO;
   	
-  	private BigDecimal costUnitPrice;
+  	private BigDecimal costUnitPrice = BigDecimal.ZERO;
   	
-  	private BigDecimal SaleUnitPrice;
+  	private BigDecimal SaleUnitPrice = BigDecimal.ZERO;
   	
   	private String goodsName;
   	
@@ -62,13 +62,12 @@ public class SaleDetailWriteCondition implements Serializable {
 		this.stockId = stockId;
 	}
 
-	public BigDecimal getGoodsQuantity() {
-		return goodsQuantity;
+	public BigDecimal getQuantity() {
+		return quantity;
 	}
 
-	public void setGoodsQuantity(BigDecimal goodsQuantity) {
-		this.goodsQuantity = goodsQuantity;
+	public void setQuantity(BigDecimal quantity) {
+		this.quantity = quantity;
 	}
 
-	  	
 }

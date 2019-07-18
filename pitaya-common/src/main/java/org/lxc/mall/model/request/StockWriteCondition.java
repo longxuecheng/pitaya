@@ -43,24 +43,6 @@ public class StockWriteCondition implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
-    public Stock parseModel() {
-    	Stock s = new Stock();
-    	s.setId(id);
-    	s.setGoodsId(goodsId);
-    	s.setCostUnitPrice(costUnitPrice);
-    	s.setSaleUnitPrice(saleUnitPrice);
-    	s.setDiscount(discount);
-    	s.setName(name);
-    	s.setTotalQuantity(availableQuantity);
-    	s.setAvailableQuantity(availableQuantity);
-    	s.setSpecification(String.join("_", specifications));
-    	s.setShippingFee(shippingFee);
-    	s.setIsRush(isRush);
-    	s.setStatus(status);
-    	s.setWarehouseId(warehouseId);
-    	return s;
-    }
-
     
     public List<String> getSpecifications() {
 		return specifications;

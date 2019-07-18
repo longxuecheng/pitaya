@@ -3,6 +3,8 @@ package org.lxc.mall.sys.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.lxc.mall.core.exception.ErrorCode;
+import org.lxc.mall.core.exception.ProcessException;
 import org.lxc.mall.sys.annotation.Permission;
 import org.lxc.mall.sys.auth.UserAuthorizationRealm;
 import org.lxc.mall.sys.auth.UserPrincipal;
@@ -10,11 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.auth0.jwt.exceptions.JWTVerificationException;
 
 @Component
 public class AuthorizationInterceptor implements HandlerInterceptor  {
@@ -30,23 +33,25 @@ public class AuthorizationInterceptor implements HandlerInterceptor  {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		logger.info(String.format("-- This is INFO level test Now time %d --", System.currentTimeMillis()));
-//		if (request.getMethod() == HttpMethod.OPTIONS.name()) {
-//			return true;
-//		}
-//		String accessToken = getAccessToken(request);
-//		if (accessToken == null) {
-//			notAuthenticatedResponse(response);
-//			return false;
-//		}
-//		UserPrincipal principal = userAuthorizationRealm.getPrincipal(accessToken);
-//		if (principal == null) {
-//			notAuthenticatedResponse(response);
-//			return false;
-//		}
-//		if (!checkAuthorization(principal, handler)) {
-//			notAuthorizedResponse(response);
-//			return false;
-//		}
+		if (request.getMethod().equals(HttpMethod.OPTIONS.name())) {
+			return true;
+		}
+		String accessToken = getAccessToken(request);
+		if (accessToken == null) {
+			notAuthenticatedResponse(response);
+		}
+		try {
+			userAuthorizationRealm.validate(accessToken);
+		}catch (JWTVerificationException e) {
+			notAuthenticatedResponse(response);
+		}
+		UserPrincipal principal = userAuthorizationRealm.getPrincipal(accessToken);
+		if (principal == null) {
+			notAuthenticatedResponse(response);
+		}
+		if (!checkAuthorization(principal, handler)) {
+			notAuthorizedResponse(response);
+		}
 		return true;
 	}
 	
@@ -72,13 +77,14 @@ public class AuthorizationInterceptor implements HandlerInterceptor  {
 	/**
 	 * Mark response status as unauthorized
 	 * @param response
+	 * @throws Exception 
 	 */
-	private void notAuthorizedResponse(HttpServletResponse response) {
-		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+	private void notAuthorizedResponse(HttpServletResponse response) throws Exception {
+		throw new ProcessException(ErrorCode.UNAUTHORIZED, "you don't have enough permission");
 	}
 	
-	private void notAuthenticatedResponse(HttpServletResponse response) {
-		response.setStatus(HttpStatus.FORBIDDEN.value());
+	private void notAuthenticatedResponse(HttpServletResponse response) throws Exception {
+		throw new ProcessException(ErrorCode.UNAUTHENTICATED, "you need to authenticate first");
 	}
 	
 	private String getAccessToken(HttpServletRequest request) {

@@ -59,7 +59,16 @@ public class SaleController {
 	@ResponseBody
     public Map<String,Object> editSaleOrder(@RequestBody SaleWriteCondition condition) throws Exception{
 		Map<String,Object> dataMap = new HashMap<>();
-		Long id = saleOrderService.add(condition);
+		Long id = saleOrderService.edit(condition);
+		dataMap.put("id", id);
+		return dataMap;
+	}
+	
+	@RequestMapping(value="order/pay",method=RequestMethod.POST)
+	@ResponseBody
+    public Map<String,Object> pay(@RequestBody Map<String,Long> id) throws Exception{
+		Map<String,Object> dataMap = new HashMap<>();
+		saleOrderService.pay(id.get("id"));
 		dataMap.put("id", id);
 		return dataMap;
 	}

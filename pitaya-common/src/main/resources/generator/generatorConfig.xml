@@ -48,8 +48,8 @@
 <!--        </table> -->
 	  <!--  <table tableName="goods_category" domainObjectName="GoodsCategory" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
        </table> -->
-       <table tableName="supplier_warehouse" domainObjectName="SupplierWarehouse" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-       </table>
+      <!--  <table tableName="supplier_warehouse" domainObjectName="SupplierWarehouse" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+       </table> -->
       <!--  <table tableName="goods_photo" domainObjectName="GoodsPhoto" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
        </table> -->
        <!--  <table tableName="stock" domainObjectName="Stock" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">

@@ -12,15 +12,15 @@ public class SaleDetail implements Serializable {
 
     private String goodsName;
 
-    private BigDecimal goodsQuantity;
+    private BigDecimal quantity;
 
+    private BigDecimal saleUnitPrice;
+    
     private BigDecimal costUnitPrice;
 
     private String remark;
 
     private Long stockId;
-
-    private BigDecimal saleUnitPrice;
 
     private static final long serialVersionUID = 1L;
 
@@ -56,15 +56,15 @@ public class SaleDetail implements Serializable {
         this.goodsName = goodsName == null ? null : goodsName.trim();
     }
 
-    public BigDecimal getGoodsQuantity() {
-        return goodsQuantity;
-    }
+    public BigDecimal getQuantity() {
+		return quantity;
+	}
 
-    public void setGoodsQuantity(BigDecimal goodsQuantity) {
-        this.goodsQuantity = goodsQuantity;
-    }
+	public void setQuantity(BigDecimal quantity) {
+		this.quantity = quantity;
+	}
 
-    public BigDecimal getCostUnitPrice() {
+	public BigDecimal getCostUnitPrice() {
         return costUnitPrice;
     }
 

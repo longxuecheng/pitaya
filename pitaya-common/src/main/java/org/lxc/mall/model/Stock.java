@@ -39,9 +39,19 @@ public class Stock implements Serializable {
 
     private Long goodsId;
     
+    private Long supplierId;
+    
     private Integer warehouseId;
     
-    public Integer getWarehouseId() {
+    public Long getSupplierId() {
+		return supplierId;
+	}
+
+	public void setSupplierId(Long supplierId) {
+		this.supplierId = supplierId;
+	}
+
+	public Integer getWarehouseId() {
 		return warehouseId;
 	}
 

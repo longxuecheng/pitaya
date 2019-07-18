@@ -41,11 +41,11 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="org.lxc.mall.model.Supplier" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-    insert into supplier (id, name, address, 
+    insert into supplier (id, supplier_id, name, address, 
       phone_no, email, license, 
       tel, contact_name, remark
       )
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT},#{supplierId} #{name,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{phoneNo,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{license,jdbcType=VARCHAR}, 
       #{tel,jdbcType=VARCHAR}, #{contactName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
       )
@@ -55,6 +55,9 @@
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
+      </if>
+      <if test="supplierId != null" >
+        supplier_id,
       </if>
       <if test="name != null" >
         name,
@@ -84,6 +87,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=BIGINT},
+      </if>
+       <if test="supplierId != null" >
+        #{supplier_id}
       </if>
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},

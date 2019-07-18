@@ -223,10 +223,12 @@ public class GoodsService implements IGoodsService {
 		Goods_DTO dto = new Goods_DTO();
 		dto.setId(good.getId());
 		dto.setName(good.getName());
+		dto.setRetailPrice(good.getRetailPrice());
 		dto.setStatus(good.getStatus());
 		dto.setProducingArea(good.getProducingArea());
 		dto.setSupplierId(good.getSupplierId());
 		dto.setDescription(good.getDescription());
+		dto.setBriefDescription(good.getBriefDescription());
 		dto.setCategory(good.getCategoryId());
 		dto.setCreateTime(TimeFormatter.formatDefault(good.getCreateTime()));
 		dto.setUpdateTime(TimeFormatter.formatDefault(good.getUpdateTime()));

@@ -40,6 +40,31 @@ public class SaleOrder implements Serializable {
     private Date estimatedArrivalDate;
 
     private BigDecimal orderAmt;
+    
+    public static enum OrderStatus {
+    	
+    	CREATED("CREATED","已创建"),
+    	PAYED("PAYED","已付款"),
+    	REFUND_SC("REFUND_SC","退款完成"),
+    	REFUNDING("REFUNDING","退款中");
+    	
+    	private String code;
+    	
+    	private String desc;
+    	
+    	private OrderStatus(String code,String desc) {
+    		this.code = code;
+    		this.desc = desc;
+    	}
+    	
+    	public String code() {
+    		return this.code;
+    	}
+    	
+    	public String desc() {
+    		return this.desc;
+    	} 
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -185,5 +210,20 @@ public class SaleOrder implements Serializable {
 
     public void setOrderAmt(BigDecimal orderAmt) {
         this.orderAmt = orderAmt;
+    }
+    
+    /**
+     * Check whether this sale order can be payed
+     * @return
+     */
+    public boolean payable() {
+    	if (OrderStatus.CREATED.code().equals(status)) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public void update() {
+    	this.updateTime = new Date();
     }
 }
