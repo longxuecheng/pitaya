@@ -14,6 +14,8 @@ import org.springframework.util.StringUtils;
 public class GoodsWriteCondition implements Serializable{
 	
     private Long id;
+    
+    private String status;
 
     private String name;
     
@@ -37,6 +39,14 @@ public class GoodsWriteCondition implements Serializable{
     
     private List<GoodsSpecification> specifications;
     
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public List<GoodsSpecification> getSpecifications() {
 		return specifications;
 	}
@@ -140,6 +150,7 @@ public class GoodsWriteCondition implements Serializable{
 		g.setSupplierId(supplierId);
 		g.setCategoryId(categoryId);
 		g.setName(name);
+		g.setStatus(status);
 		g.setRetailPrice(retailPrice);
 		g.setDescription(description);
 		g.setBriefDescription(briefDescription);

@@ -92,7 +92,8 @@ public class SupplierService implements ISupplierService {
 	
 	private void createOrUpdateWarehouse(SupplierWriteConditon s) throws Exception {
 		if (s.getWarehouses() == null || s.getWarehouses().isEmpty()) {
-			ProcessException.throwExeptionByFormat("请设置仓库");
+//			ProcessException.throwExeptionByFormat("请设置仓库");
+			return;
 		}
 		try {
 			s.getWarehouses().stream().forEach((item) -> {
