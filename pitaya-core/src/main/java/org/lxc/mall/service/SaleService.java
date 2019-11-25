@@ -214,7 +214,7 @@ public class SaleService implements ISaleOrderService{
 		page.setPageNo(query.pageNo);
 		page.setPageSize(query.pageSize);
 		return page;
-	}
+	} 
 
 	@Override
 	public SaleOrder_DTO queryById(Long id) {

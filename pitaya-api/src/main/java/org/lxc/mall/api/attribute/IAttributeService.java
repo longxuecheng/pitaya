@@ -14,5 +14,6 @@ public interface IAttributeService {
 	public PaginationInfo<Attribute> getAttributesByPagination(AttributeQueryCondition query);
 	
 	public void createAttribute(AttributeWriteCondition params);
-
+	
 }
+
